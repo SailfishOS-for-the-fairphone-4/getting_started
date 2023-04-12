@@ -7,8 +7,10 @@
 - Preferably 16gb of ram
 
 ### To-Be-Installed Packages:
-- Curl
-- Git
+- curl
+- git
+- cpio
+- ccache
 
 ### Build Info:
 - Android-base: LineageOS-18.1
@@ -25,7 +27,7 @@ notation.
 ```
 HOST $
 
-cat <<'EOF' > $HOME/.hadk.env
+cat << 'EOF' > $HOME/.hadk.env
 export ANDROID_ROOT="$HOME/hadk"
 export VENDOR="fairphone"
 export DEVICE="FP4"
@@ -34,7 +36,7 @@ EOF
 ```
 
 ```
-HOST$
+HOST $
 
 cat << 'EOF' >> $HOME/.mersdkubu.profile
 function hadk() { source $HOME/.hadk.env; echo "Env setup for $DEVICE"; }
@@ -126,9 +128,10 @@ HABUILD_SDK $
 mkdir -p ~/bin
 curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
 chmod a+x ~/bin/repo
+source $HOME/.profile
 ```
 
-then run ```source $HOME/.profile``` to update the environment. This makes sure that ~/bin is included in the path variable.
+We run ```source $HOME/.profile``` to update the environment. This makes sure that ~/bin is included in the path variable.
 
 Now that the repo command has been setup. We can use it to clone the LineageOS android-base. 
 ```
@@ -143,6 +146,9 @@ repo init -u https://www.github.com/Sailfishos-for-the-fairphone-4/android.git -
 This creates a hidden .repo folder where the configuration is stored.
 
 ### Syncing the Android Base
+
+
+#TODO, different explanation
 We need a Manifest file to configure our android base. The first one we need to create is local_manifest/$DEVICE.xml. This file needs to contain some device configurations.
 
 
@@ -151,7 +157,7 @@ HABUILD_SDK $
 
 mkdir -p $ANDROID_ROOT/.repo/local_manifests && cp $ANDROID_ROOT/.repo/manifests/FP4.xml $ANDROID_ROOT/.repo/local_manifests/FP4.xml
 ```
-
+#TODO, different explanation
 As we can see, all the revisions are lined up with LineagoOS version 18.1. Now we are ready to "sync and build" the repo's that are configured in the manifests. Therefor we need to run:
 
 
@@ -164,6 +170,7 @@ repo sync --fetch-submodules
 The expected disk usage for the source tree after sync is **150 GB**. Depending on your connection, this might take some time. In the meantime, you could make yourself familiar with the rest of this guide.
 
 We now need to sync lib-hybris into our worktree.
+#TODO, why?
 ```
 HABUILD_SDK $
 
@@ -173,6 +180,7 @@ cd $ANDROID_ROOT
 ```
 
 We are now going to apply the hybris patches to our codebase.
+#TODO, why?
 ```
 HABUILD_SDK $
 
@@ -181,8 +189,6 @@ cd $ANDROID_ROOT/
 ```
 
 Before we can start our build we need change one of the Tests: CalendarTests -> CalendarCommonTests 
-
-
 
 ```
 $ HABUILD
@@ -196,6 +202,7 @@ This because we don't use the LineageOS calendar, but the AOSP calendar, so then
 # Configuring file and kernelconfig
 
 The next step is to configure the file and kernel therefor we download the setup configuration files for the FP4. 
+#TODO, extend explanation
 
 ```
 HABUILD_SDK $
@@ -221,6 +228,9 @@ git commit -m "Setup FP4 configuration"
 ```
 
 # add xmllint to allowed programs
+
+#TODO, is this still something we do?
+
 We now need to add xmllint to the allowed programs. This is to suppress the buildwarnings caused by the buildaystem trying to use xmllint but not being allowed to use it.
 add ```"xmllint": Allowed,``` to the configuration list in ```$hadk/build/soong/ui/build/paths/config.go```
 
@@ -231,7 +241,7 @@ HABUILD_SDK $
 
 cd $ANDROID_ROOT
 source build/envsetup.sh
-(optional) export USE_CCACHE=1
+export USE_CCACHE=1
 breakfast $DEVICE
 make -j$(nproc --all) hybris-hal droidmedia
 ```
@@ -246,12 +256,12 @@ cd $ANDROID_ROOT
 
 hybris/mer-kernel-check/mer_verify_kernel_config ./out/target/product/FP4/obj/DTBO_OBJ/.config ./out/target/product/FP4/obj/DTB_OBJ/.config ./out/target/product/FP4/obj/KERNEL_OBJ/.config
 ```
-In case of errors fix and recompile warning can be fixed later.
+In case of errors; fix and recompile. Warning can be fixed later.
 Fixes need te be made in ```$ANDROID_ROOT/kernel/fairphone/sm7225/arch/arm64/configs/lineage_FP4_defconfig```
 **Important: Don't forget to commit changes to prevent the dirty flag** 
 
 # Install SDK-targets
-Now that everything is synced and built we are ready to install the remaining platform sdk-tools
+Now that everything is synced and built, we are ready to install the remaining platform sdk-tools
 ```
 PLATFORM_SDK $
 
@@ -294,7 +304,7 @@ binaries and execute them for your architecture.
 
 # Setting up rpm
 
-Since the targets and tooling work we are ready to set up the rpm-configuration tondo that we need to clone the repositories containg the FP4 rpm-configuration
+Since the targets and tooling work we are ready to set up the rpm-configuration. To do that, we need to clone the repositories containing the FP4 rpm-configuration.
 ```
 PLATFORM_SDK $
 
