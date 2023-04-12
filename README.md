@@ -1,17 +1,16 @@
 # Getting Started
 
 ## Requirements
-### Packages:
-- Curl
-- Git
-- Ccache (optional)
-
-### Computer-spec-requirements
+### Host Device 
 - Linux x86 64-bit
 - 200gb of storage
 - Preferably 16gb of ram
 
-### build requirements:
+### To-Be-Installed Packages:
+- Curl
+- Git
+
+### Build Info:
 - Android-base: LineageOS-18.1
 - Port: SailfishOS
 
