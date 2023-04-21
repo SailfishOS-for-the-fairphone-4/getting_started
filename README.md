@@ -20,7 +20,7 @@
 - [Install SDK-targets](#install-sdk-targets)
 - [Check target and tooling installation](#check-target-and-tooling-installation)
 - [Setting up rpm](#setting-up-rpm)
-- [Building packages in PLATFORM_SDK](#building-packages-in-platform-sdk)
+- [Building packages in PLATFORM_SDK](#building-packages-in-platform_sdk)
 - [Generating an updater .zip](#generating-an-updater-zip)
   * [init script](#init-script)
 
