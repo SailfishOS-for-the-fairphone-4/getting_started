@@ -1,18 +1,42 @@
 # Getting Started
 
+- [Getting Started](#getting-started)
+  * [Requirements](#requirements)
+    + [Host Device](#host-device)
+    + [To-Be-Installed Packages](#to-be-installed-packages)
+    + [Build Info](#build-info)
+  * [Setting up the SDKs](#setting-up-the-sdks)
+    + [Setting up the Environment Variables](#setting-up-the-environment-variables)
+  * [Setup the Platform SDK](#setup-the-platform-sdk)
+    + [Install Tooling](#install-tooling)
+    + [Setup the Android build Environment](#setup-the-android-build-environment)
+  * [Building the Android Hardware Abstraction Layer](#building-the-android-hardware-abstraction-layer)
+    + [Sourcing the Android Base](#sourcing-the-android-base)
+    + [Syncing the Android Base](#syncing-the-android-base)
+- [Configuring file and kernelconfig](#configuring-file-and-kernelconfig)
+- [add xmllint to allowed programs](#add-xmllint-to-allowed-programs)
+- [Building boot and recovery image](#building-boot-and-recovery-image)
+- [Fixing errors in kernelconfiguration](#fixing-errors-in-kernelconfiguration)
+- [Install SDK-targets](#install-sdk-targets)
+- [Check target and tooling installation](#check-target-and-tooling-installation)
+- [Setting up rpm](#setting-up-rpm)
+- [Building packages in PLATFORM_SDK](#building-packages-in-platform-sdk)
+- [Generating an updater .zip](#generating-an-updater-zip)
+  * [init script](#init-script)
+
 ## Requirements
 ### Host Device 
 - Linux x86 64-bit
 - 200gb of storage
 - Preferably 16gb of ram
 
-### To-Be-Installed Packages:
+### To-Be-Installed Packages
 - curl
 - git
 - cpio
 - ccache
 
-### Build Info:
+### Build Info
 - Android-base: LineageOS-18.1
 - Port: SailfishOS
 
@@ -109,7 +133,7 @@ PLATFORM_SDK $
 ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu
 ```
 
-## Building the Android Hardware Abstraction Layer (HAL)
+## Building the Android Hardware Abstraction Layer
 ### Sourcing the Android Base
 
 We first need to setup our name and emailadress in the git-configuration.
