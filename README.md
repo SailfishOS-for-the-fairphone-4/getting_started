@@ -11,8 +11,7 @@
 - [Building the Android Hardware Abstraction Layer](#building-the-android-hardware-abstraction-layer)
   + [Sourcing the Android Base](#sourcing-the-android-base)
   + [Syncing the Android Base](#syncing-the-android-base)
-- [Configuring file and kernelconfig](#configuring-file-and-kernelconfig)
-- [add xmllint to allowed programs](#add-xmllint-to-allowed-programs)
+- [Configuring partitions and kernel configuration](#configuring-partitions-and-kernel-configuration)
 - [Building boot and recovery image](#building-boot-and-recovery-image)
 - [Fixing errors in kernelconfiguration](#fixing-errors-in-kernelconfiguration)
 - [Install SDK-targets](#install-sdk-targets)
@@ -165,34 +164,45 @@ cd $ANDROID_ROOT
 repo init -u https://www.github.com/Sailfishos-for-the-fairphone-4/android.git -b lineage-18.1
 ```
 
-This creates a hidden .repo folder where the configuration is stored.
+This creates a hidden .repo folder where the configuration is stored. This folder also contains a default.xml file which is used to configure the locations from where we obtain our android base.
 
 ### Syncing the Android Base
 
+In the .repo folder which we initialized in the previous step, contains `.xml` files. These files are called Manifest files. We now have 3 manifest files: 
+* snippets/lineage.xml
+* default.xml
+* $DEVICE.xml (this case: FP4.xml)
 
-#TODO, different explanation
-We need a Manifest file to configure our android base. The first one we need to create is local_manifest/$DEVICE.xml. This file needs to contain some device configurations.
-
+The $DEVICE.xml file is a device specific manifest file. We need to copy this file to a new directory: `local_manifests`
 
 ```
 HABUILD_SDK $
 
 mkdir -p $ANDROID_ROOT/.repo/local_manifests && cp $ANDROID_ROOT/.repo/manifests/FP4.xml $ANDROID_ROOT/.repo/local_manifests/FP4.xml
 ```
-#TODO, different explanation
-As we can see, all the revisions are lined up with LineagoOS version 18.1. Now we are ready to "sync and build" the repo's that are configured in the manifests. Therefor we need to run:
-
+Now we are ready to "sync and build" the repo's that are configured in the manifest files. To do this, we need to run:
 
 ```
 HABUILD_SDK $
 
 repo sync --fetch-submodules
 ```
+----
+#### Errors while running `repo sync --fetch-submodules`
+*error: Cannot fetch . . . (GitError: –force-sync not enabled; cannot overwrite a local work tree.*, usually
+happens if repo sync --fetch-submodules gets interrupted. It is a bug of the repo tool. Ensure
+all your changes have been safely stowed (check with repo status), and then workaround by:
 
-The expected disk usage for the source tree after sync is **150 GB**. Depending on your connection, this might take some time. In the meantime, you could make yourself familiar with the rest of this guide.
+```
+HABUILD_SDK $
+repo sync --force-sync
+repo sync --fetch-submodules
+```
+----
 
-We now need to sync lib-hybris into our worktree.
-#TODO, why?
+The expected disk usage for the source tree after sync is **~120 GB**. Depending on your connection, this might take some time. In the meantime, you could make yourself familiar with the rest of this guide.
+
+We now need to sync lib-hybris into our worktree. This is necessary because lib-hybris provides an interface for Sailfish OS to work with the android base
 ```
 HABUILD_SDK $
 
@@ -201,8 +211,8 @@ git clone --recurse-submodules https://github.com/mer-hybris/libhybris.git
 cd $ANDROID_ROOT
 ```
 
-We are now going to apply the hybris patches to our codebase.
-#TODO, why?
+We are now going to apply the hybris patches to our codebase, so that the default lib-hybris gets configured to work with our specific android base version.
+
 ```
 HABUILD_SDK $
 
@@ -221,11 +231,9 @@ sed  -i \"s/CalendarTests/CalendarCommonTests/\" platform_testing/build/tasks/te
 We need to change the already existing CalendarTests to CalendarCommonTests.
 This because we don't use the LineageOS calendar, but the AOSP calendar, so then we need to test the AOSP calendar.
 
-# Configuring file and kernelconfig
+# Configuring partitions and kernel configuration
 
-The next step is to configure the file and kernel therefor we download the setup configuration files for the FP4. 
-#TODO, extend explanation
-
+The next step is to configure the partitions and kernel configuration. This is needed so that the kernel is compiled with the correct settings, and the startup process uses a correct partition layout. To get this configuration we need to download the configuration files for the FP4. 
 ```
 HABUILD_SDK $
 
@@ -242,20 +250,14 @@ curl https://raw.githubusercontent.com/SailfishOS-for-the-fairphone-4/android_ke
 
 Since we made changes to the kernel we need to commit these changes to prevent a dirty flag notation in the kernel version
 ```
+HABUILD_SDK $
+
 cd $ANDROID_ROOT/kernel/fairphone/sm7225/arch/arm64/configs
 
 git add .
 git commit -m "Setup FP4 configuration"
 
 ```
-
-# add xmllint to allowed programs
-
-#TODO, is this still something we do?
-
-We now need to add xmllint to the allowed programs. This is to suppress the buildwarnings caused by the buildaystem trying to use xmllint but not being allowed to use it.
-add ```"xmllint": Allowed,``` to the configuration list in ```$hadk/build/soong/ui/build/paths/config.go```
-
 # Building boot and recovery image
 Now we are ready to start building everything we sourced and synced so far:
 ```
