@@ -351,7 +351,20 @@ cd hybris/droid-hal-version-FP4
 git clone --recurse-submodules https://github.com/SailfishOS-for-the-fairphone-4/droid-hal-version-FP4.git
 ```
 
-Then add ```Requires: droid-hal-FP4-detritus``` to ```$ANDROID_ROOT/hybris/droid-configs/patters/patterns-sailfish-device-adaptation-FP4.inc```
+Cloning the needed files to generate the .zip
+```
+PLATFORM_SDK $
+
+cd $ANDROID_ROOT/
+git clone https://github.com/Sailfishos-for-the-fairphone-4/hybris-installer hybris/hybris-installer/
+mkdir hybris/droid-configs/kickstart/pack/fp4/
+curl -L https://raw.githubusercontent.com/SailfishOS-for-the-fairphone-4/droid-configs-FP4/master/kickstart/pack/fp4/pack_package-droid-updater -o hybris/droid-configs/kickstart/pack/fp4/pack_package-droid-updater
+```
+
+add dynamic partitions parse package
+rpm/dhd/helpers/build_packages -b hybris/dyn-parts -s rpm/*.spec
+
+
 
 
 # Building packages in PLATFORM_SDK
@@ -360,56 +373,25 @@ After those commands we can build the packages:
 ```
 PLATFORM_SDK $
 
+# To build everything at once.
 cd $ANDROID_ROOT
-yes | rpm/dhd/helpers/build_packages.sh --droid-hal
-yes | rpm/dhd/helpers/build_packages.sh --configs
-yes | rpm/dhd/helpers/build_packages.sh --mw
-yes | rpm/dhd/helpers/build_packages.sh --gg
-yes | rpm/dhd/helpers/build_packages.sh --version
+rpm/dhd/helpers/build_packages.sh 
+
+# Build packages seperate by using the 
+  --droid-hal
+  --configs
+  --mw
+  --gg
+  --version
 
 export VERSION=4.5.0.18
-export EXTRA_NAME=-alpha
-yes | rpm/dhd/helpers/build_packages.sh --mic
+rpm/dhd/helpers/build_packages.sh --mic
 ```
 
 
-# Generating an updater .zip
-In this project we use the hybris-installer repo to generate an updater zip-file. Set it up with the following commands:
 
-```
-PLATFORM_SDK $
 
-cd $ANDROID_ROOT/
-git clone https://github.com/sailfishos-oneplus5/hybris-installer hybris/hybris-installer/
-mkdir hybris/droid-configs/kickstart/
-curl -L https://git.io/Je2JI -o hybris/droid-configs/kickstart/pack_package-droid-updater
-```
 
-The update binary script has to be slightly modified to be compatible with the Fairphone 4. Please make the following changes to hybris/hybris-installer/META-INF/com/google/android/update-binary:
-* Change boot to boot_a on line 144 and 151
-* Change *.ext4 to *.f2fs on line 57
-
-The pack_package-droid-updater included is made for the OnePlus-5 and needs to be adapted to support the Fairphone make the following changes:
-* Set LOS_VER to 18.01 on line 42
-* Set DEVICE to FP4 on line 3
-* Set EXTRA_NAME to -alpha on line 4
-
-Run the following commando to create the .zip from the directory containing the tar.bz2:
-```
-PLATFORM_SDK $
-
-source ../hybris/droid-configs/kickstart/pack_package-droid-updater
-```
-
-## init script
-The init-script in the hyris-boot repo needs to be updated. hadk/hybris/hybris-boot/init-script.
-This part of the wiki is intended for use within the development team only. Required changes will be pushed to GitHub.
-- Change BOOTLOGO on line 27 to 1
-- Change ALWAYSDEBUG on line 28 to 0
-- (temporary) Change sleep on line 276 from 60 to 5
-- (temporary) Comment out reboot-f on line 277
-- (optional) add cp /init.log /target/debug.log on line 388
-- (optional) add cp /diagnosis.log /target/diag.log on line 388
 
 
 
