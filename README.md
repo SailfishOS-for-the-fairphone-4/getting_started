@@ -362,7 +362,7 @@ curl -L https://raw.githubusercontent.com/SailfishOS-for-the-fairphone-4/droid-c
 ```
 
 add dynamic partitions parse package
-rpm/dhd/helpers/build_packages -b hybris/dyn-parts -s rpm/*.spec
+rpm/dhd/helpers/build_packages.sh -b hybris/parse-android-dynparts -s rpm/parse-android-dynparts.spec
 
 
 
