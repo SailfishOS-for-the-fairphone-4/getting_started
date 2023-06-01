@@ -103,7 +103,6 @@ Run the next code-block to install these tools:
 ```
 PLATFORM_SDK $
 
-sudo zypper ref
 sudo zypper in android-tools-hadk kmod createrepo_c
 ```
 
@@ -216,7 +215,7 @@ Before we can start our build we need change one of the Tests: CalendarTests -> 
 ```
 $ HABUILD
 
-sed  -i \"s/CalendarTests/CalendarCommonTests/\" platform_testing/build/tasks/tests/platform_test_list.mk
+sed  -i "s/CalendarTests/CalendarCommonTests/" platform_testing/build/tasks/tests/platform_test_list.mk
 ```
 
 We need to change the already existing CalendarTests to CalendarCommonTests.
@@ -315,7 +314,6 @@ git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/dro
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-hal-version-FP4.git hybris/droid-hal-version-FP4
 git clone --recurse-submodules git@github.com:Sailfishos-for-the-fairphone-4/hybris-installer hybris/hybris-installer/
 
-# Extra MW packages
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/parse-android-dynparts.git hybris/parse-android-dynparts
 
 ```
@@ -349,7 +347,7 @@ PLATFORM_SDK $
 
 # To build everything at once.
 cd $ANDROID_ROOT
-export VERSION=4.5.0.18
+export RELEASE=4.5.0.18
 rpm/dhd/helpers/build_packages.sh 
 
 
