@@ -90,7 +90,7 @@ if [[ $SAILFISH_SDK ]]; then
 fi
 EOF
 
-exec bash
+source ~/.bashrc
 sfossdk
 ```
 The sfossdk at the end of the funtion is used to enter the PlatformSDK 
@@ -161,7 +161,7 @@ HABUILD_SDK $
 sudo mkdir -p $ANDROID_ROOT
 sudo chown -R $USER $ANDROID_ROOT
 cd $ANDROID_ROOT
-repo init -u https://www.github.com/Sailfishos-for-the-fairphone-4/android.git -b lineage-18.1
+repo init -u https://www.github.com/Sailfishos-for-the-fairphone-4/android.git -b hybris-18.1
 ```
 
 This creates a hidden .repo folder where the configuration is stored. This folder also contains a default.xml file which is used to configure the locations from where we obtain our android base.
@@ -202,15 +202,6 @@ repo sync --fetch-submodules
 
 The expected disk usage for the source tree after sync is **~120 GB**. Depending on your connection, this might take some time. In the meantime, you could make yourself familiar with the rest of this guide.
 
-We now need to sync lib-hybris into our worktree. This is necessary because lib-hybris provides an interface for Sailfish OS to work with the android base
-```
-HABUILD_SDK $
-
-cd $ANDROID_ROOT/external
-git clone --recurse-submodules https://github.com/mer-hybris/libhybris.git
-cd $ANDROID_ROOT
-```
-
 We are now going to apply the hybris patches to our codebase, so that the default lib-hybris gets configured to work with our specific android base version.
 
 ```
@@ -233,20 +224,7 @@ This because we don't use the LineageOS calendar, but the AOSP calendar, so then
 
 # Configuring partitions and kernel configuration
 
-The next step is to configure the partitions and kernel configuration. This is needed so that the kernel is compiled with the correct settings, and the startup process uses a correct partition layout. To get this configuration we need to download the configuration files for the FP4. 
-```
-HABUILD_SDK $
 
-cd $ANDROID_ROOT/hybris/hybris-boot/
-curl https://raw.githubusercontent.com/SailfishOS-for-the-fairphone-4/hybris-boot/master/fixup-mountpoints -o fixup-mountpoints
-chmod 775 fixup-mountpoints
-
-cd $ANDROID_ROOT/device/fairphone/FP4/rootdir/etc/
-curl https://raw.githubusercontent.com/SailfishOS-for-the-fairphone-4/android_device_fairphone_FP4/lineage-18.1/rootdir/etc/fstab.default -o fstab.default
-
-cd $ANDROID_ROOT/kernel/fairphone/sm7225/arch/arm64/configs
-curl https://raw.githubusercontent.com/SailfishOS-for-the-fairphone-4/android_kernel_fairphone_sm7225/lineage-18.1/arch/arm64/configs/lineage_FP4_defconfig -o lineage_FP4_defconfig
-```
 
 Since we made changes to the kernel we need to commit these changes to prevent a dirty flag notation in the kernel version
 ```
@@ -265,7 +243,6 @@ HABUILD_SDK $
 
 cd $ANDROID_ROOT
 source build/envsetup.sh
-export USE_CCACHE=1
 breakfast $DEVICE
 make -j$(nproc --all) hybris-hal droidmedia
 ```
@@ -333,41 +310,38 @@ Since the targets and tooling work we are ready to set up the rpm-configuration.
 PLATFORM_SDK $
 
 cd $ANDROID_ROOT
-mkdir rpm
-cd rpm
-git clone --recurse-submodules https://github.com/SailfishOS-for-the-fairphone-4/droid-hal-device-FP4.git
+git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-hal-device-FP4.git rpm
+git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-configs-FP4.git hybris/droid-configs
+git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-hal-version-FP4.git hybris/droid-hal-version-FP4
+git clone --recurse-submodules git@github.com:Sailfishos-for-the-fairphone-4/hybris-installer hybris/hybris-installer/
 
-cd -
-mkdir -p hybris/droid-configs
-cd hybris/droid-configs
-git clone --recurse-submodules https://github.com/SailfishOS-for-the-fairphone-4/droid-configs-FP4.git
+# Extra MW packages
+git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/parse-android-dynparts.git hybris/parse-android-dynparts
 
-cd -
-rpm/dhd/helpers/add_new_device.sh
-
-cd -
-mkdir -p hybris/droid-hal-version-FP4
-cd hybris/droid-hal-version-FP4
-git clone --recurse-submodules https://github.com/SailfishOS-for-the-fairphone-4/droid-hal-version-FP4.git
 ```
-
-Cloning the needed files to generate the .zip
-```
-PLATFORM_SDK $
-
-cd $ANDROID_ROOT/
-git clone https://github.com/Sailfishos-for-the-fairphone-4/hybris-installer hybris/hybris-installer/
-mkdir hybris/droid-configs/kickstart/pack/fp4/
-curl -L https://raw.githubusercontent.com/SailfishOS-for-the-fairphone-4/droid-configs-FP4/master/kickstart/pack/fp4/pack_package-droid-updater -o hybris/droid-configs/kickstart/pack/fp4/pack_package-droid-updater
-```
-
-add dynamic partitions parse package
-rpm/dhd/helpers/build_packages.sh -b hybris/parse-android-dynparts -s rpm/parse-android-dynparts.spec
-
-
 
 
 # Building packages in PLATFORM_SDK
+
+rpm/dhd/helpers/build_packages.sh --build=hybris/parse-android-dynparts -s rpm/parse-android-dynparts.spec
+
+# TODO:
+rpm/dhd/helpers/build_packages.sh --build=hybris/hidl_audio -s rpm/hidl_audio.spec
+
+add fingerprint deamon
+ 
+HABUILD
+make libbiometry_fp_api 
+make fake_crypt
+
+SFOSSDK
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community --spec=rpm/droid-biometry-fp.spec
+OR
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community --spec=rpm/droid-fake-crypt.spec
+or
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
+
+
 
 After those commands we can build the packages:
 ```
@@ -375,17 +349,17 @@ PLATFORM_SDK $
 
 # To build everything at once.
 cd $ANDROID_ROOT
+export VERSION=4.5.0.18
 rpm/dhd/helpers/build_packages.sh 
 
-# Build packages seperate by using the 
-  --droid-hal
-  --configs
-  --mw
-  --gg
-  --version
 
-export VERSION=4.5.0.18
-rpm/dhd/helpers/build_packages.sh --mic
+# Build packages seperate by using the 
+  rpm/dhd/helpers/build_packages.sh --droid-hal
+  rpm/dhd/helpers/build_packages.sh --configs
+  rpm/dhd/helpers/build_packages.sh --mw
+  rpm/dhd/helpers/build_packages.sh --gg
+  rpm/dhd/helpers/build_packages.sh --version
+  rpm/dhd/helpers/build_packages.sh --mic
 ```
 
 
