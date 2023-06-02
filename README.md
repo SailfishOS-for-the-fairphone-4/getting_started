@@ -44,9 +44,6 @@ We are going to try to guide you through it. Goodluck!
       - [Hidl Audio Fix](#hidl-audio-fix)
       - [Fingerprint deamon (TODO)](#fingerprint-deamon--todo-)
   * [Package SailfishOS](#package-sailfishos)
-
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
   
 -----
 # Setting up the SDK’S  
