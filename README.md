@@ -36,7 +36,7 @@ We are going to try to guide you through it. Goodluck!
   * [Patching the Android base](#patching-the-android-base)
   * [Building boot and recovery image](#building-boot-and-recovery-image)
   * [Configuring the built kernel](#configuring-the-built-kernel)
-- [Packaging/building SailfishOS](#packaging-building-sailfishos)
+- [Packaging and building SailfishOS](#packaging-and-building-sailfishos)
   * [Install SDK-targets and SDK-tooling](#install-sdk-targets-and-sdk-tooling)
   * [Cloning the "standard" configurations](#cloning-the--standard--configurations)
   * [Building middleware packages](#building-middleware-packages)
@@ -253,7 +253,7 @@ git commit "Changed some kernel flags."
 ```
 
 -----
-# Packaging/building SailfishOS
+# Packaging and building SailfishOS
 ## Install SDK-targets and SDK-tooling
 Now that everything is synced and built, we are ready to install the remaining platform sdk-tools
 ```
