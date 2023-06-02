@@ -30,9 +30,9 @@ We are going to try to guide you through it. Goodluck!
   * [Setup the Platform SDK](#setup-the-platform-sdk)
   * [Setup the Android build Environment](#setup-the-android-build-environment)
   * [Install Tools](#install-tools)
-  * [Sourcing and Building relevant bits of your chosen Android base](#sourcing-and-building-relevant-bits-of-your-chosen-android-base)
-    + [Sourcing the Android Base](#sourcing-the-android-base)
-    + [Syncing the Android Base](#syncing-the-android-base)
+- [Sourcing and Building relevant bits of your chosen Android base](#sourcing-and-building-relevant-bits-of-your-chosen-android-base)
+  * [Sourcing the Android Base](#sourcing-the-android-base)
+  * [Syncing the Android Base](#syncing-the-android-base)
   * [Patching the Android base](#patching-the-android-base)
   * [Building boot and recovery image](#building-boot-and-recovery-image)
   * [Configuring the built kernel](#configuring-the-built-kernel)
@@ -44,6 +44,9 @@ We are going to try to guide you through it. Goodluck!
       - [Hidl Audio Fix](#hidl-audio-fix)
       - [Fingerprint deamon (TODO)](#fingerprint-deamon--todo-)
   * [Package SailfishOS](#package-sailfishos)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
   
 -----
 # Setting up the SDK’S  
@@ -144,8 +147,8 @@ We run ```source $HOME/.profile``` to update the environment. This makes sure th
 Great! We successfully set up both SDK's!  
   
 -----
-## Sourcing and Building relevant bits of your chosen Android base
-### Sourcing the Android Base
+# Sourcing and Building relevant bits of your chosen Android base
+## Sourcing the Android Base
 
 In order to continue (and use the the Android "repo" command), we need to setup Git with some basic confguration:
 ```
@@ -178,7 +181,7 @@ mkdir -p $ANDROID_ROOT/.repo/local_manifests && cp $ANDROID_ROOT/.repo/manifests
 ```
 Now we are ready to "sync and build" the repo's that are configured in the manifest files.
 
-### Syncing the Android Base
+## Syncing the Android Base
 To sync all the configured repositories, we run the next command:
 ```
 HABUILD_SDK $
