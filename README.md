@@ -279,22 +279,22 @@ git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/dro
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-configs-FP4.git hybris/droid-configs
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-hal-version-FP4.git hybris/droid-hal-version-FP4
 git clone --recurse-submodules git@github.com:Sailfishos-for-the-fairphone-4/hybris-installer hybris/hybris-installer/
-```
+```  
 
-
-# Building middleware packages
+## Building middleware packages
 #### Android Dynamic Partitions
 ```
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/parse-android-dynparts.git hybris/parse-android-dynparts
 rpm/dhd/helpers/build_packages.sh --build=hybris/parse-android-dynparts -s rpm/parse-android-dynparts.spec
-```
+```  
 
 #### Hidl Audio Fix
 ```
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/hidl_audio.git hybris/mw/hidl_audio
 rpm/dhd/helpers/build_packages.sh --build=hybris/mw/hidl_audio -s rpm/hidl_audio.spec
-```
-#### Fingerprint deamon
+```  
+
+#### Fingerprint deamon (TODO)
  
 HABUILD
 make libbiometry_fp_api 
@@ -308,24 +308,27 @@ or
 rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
 
 
+## Package SailfishOS
+We use the ```build_packages.sh``` script in the ```$ANDROID_ROOT/rpm/dhd/helpers/``` to package SailfishOS. We could do this either by:  
 
-After those commands we can build the packages:
+Building everything at once:
 ```
 PLATFORM_SDK $
 
-# To build everything at once.
 cd $ANDROID_ROOT
 export RELEASE=4.5.0.18
 rpm/dhd/helpers/build_packages.sh 
-
-
-# Build packages seperate by using the 
-  rpm/dhd/helpers/build_packages.sh --droid-hal
-  rpm/dhd/helpers/build_packages.sh --configs
-  rpm/dhd/helpers/build_packages.sh --mw
-  rpm/dhd/helpers/build_packages.sh --gg
-  rpm/dhd/helpers/build_packages.sh --version
-  rpm/dhd/helpers/build_packages.sh --mic
+```
+OR  
+Build packages seperatly:
+```
+rpm/dhd/helpers/build_packages.sh --droid-hal
+rpm/dhd/helpers/build_packages.sh --configs
+rpm/dhd/helpers/build_packages.sh --mw
+rpm/dhd/helpers/build_packages.sh --gg
+rpm/dhd/helpers/build_packages.sh --version
+export RELEASE=4.5.0.18
+rpm/dhd/helpers/build_packages.sh --mic
 ```
 
 
