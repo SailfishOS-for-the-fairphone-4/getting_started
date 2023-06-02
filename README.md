@@ -1,12 +1,12 @@
 # Introduction
 
-You will be building SailfishOS for the Fairphone 4. In te global scheme of things, there are 4 major steps in this proces:
+We will be building SailfishOS for the Fairphone 4. In te global scheme of things, there are 4 major steps in this proces:
   1) Setting up the develop/build environment (SDK's) 
   3) Sourcing and Building relevant bits of your chosen Android base (LineageOS 18.1)
   4) Packaging/building SailfishOS
   5) Flashing SailfishOS
 
-Here is some usefull literature you might need: 
+Here is some usefull literature: 
 - Official SailfishOS Hardware Adaptation Development Kit [Page](https://docs.sailfishos.org/Develop/HADK/) 
 - Unofficial [hadk-hot](https://etherpad.wikimedia.org/p/hadk-hot)  
 - The [sfos-porters](https://piggz.co.uk/sailfishos-porters-archive/index.php) archive 
@@ -43,7 +43,7 @@ We are going to try to guide you through it. Goodluck!
   + [Generating an updater .zip](#generating-an-updater-zip)
   + [init script](#init-script) 
 - [Flashing SailfishOS](#packaging-building-sailfishos)
-  + yoyoyo  
+  + 
   
 -----
 # Setting up the SDK’S  
@@ -198,8 +198,8 @@ repo sync --force-sync
 ```
 
 The expected disk usage for the source tree after sync is **~120 GB**. Depending on your connection, this might take some time. In the meantime, you could make yourself familiar with the rest of this guide :)  
-
-----
+  
+  
 ## Patching the Android base
 We do not need the complete Android base for SailfishOS. Mer-Hybris provides the [hybris-patches repo](https://github.com/mer-hybris/hybris-patches/tree/e7fac67471028463d9eaaced51f13f40a86262f6) which patch the (already sourced) Android base.
 ```
@@ -208,25 +208,22 @@ HABUILD_SDK $
 cd $ANDROID_ROOT
 ./hybris-patches/apply-patches.sh --mb
 ```
-
-Before we can start our build we need change one of the Tests: CalendarTests -> CalendarCommonTests 
-
+Because we use a custom configurations, we removed the "Etar" repository from the configuration. Because of this, we need to change the "CalendarTests" (used for LineageOS/Etar Calendar) to "CalendarCommonTests" (used for AOSP calendar).
 ```
 $ HABUILD
 
+cd $ANDROID_ROOT
 sed  -i "s/CalendarTests/CalendarCommonTests/" platform_testing/build/tasks/tests/platform_test_list.mk
-```
+```  
 
-We need to change the already existing CalendarTests to CalendarCommonTests.
-This because we don't use the LineageOS calendar, but the AOSP calendar, so then we need to test the AOSP calendar.
+We are done configuring the Android base!  
+We can continue building the relevant bits of the Android base.  
 
------
-# Building boot and recovery image
-Now we are ready to start building everything we sourced and synced so far: and run in bash script
+## Building boot and recovery image
+Now we are ready to start building everything we sourced and synced so far:
 ```
 HABUILD_SDK $
-```  
-```
+
 cd $ANDROID_ROOT
 source build/envsetup.sh
 breakfast $DEVICE
@@ -235,20 +232,34 @@ make -j$(nproc --all) hybris-hal droidmedia
 
 This command will take a long time. This preferably runs with 16GB of RAM and and takes around 60GB of storage to complete the build.
 
------
-# Configuring the built kernel 
+## Configuring the built kernel 
+After building previous process succesfully completed, we need to check wether the kernel configurations are correct.
 ```
 HABUILD_SDK $
-cd $ANDROID_ROOT
 
+cd $ANDROID_ROOT
 hybris/mer-kernel-check/mer_verify_kernel_config ./out/target/product/FP4/obj/DTBO_OBJ/.config ./out/target/product/FP4/obj/DTB_OBJ/.config ./out/target/product/FP4/obj/KERNEL_OBJ/.config
 ```
-In case of errors; fix and recompile. Warning can be fixed later.
-Fixes need te be made in ```$ANDROID_ROOT/kernel/fairphone/sm7225/arch/arm64/configs/lineage_FP4_defconfig```
+In case of errors; fix and recompile. Warnings can be fixed later.
+Fixes need te be made in ```$ANDROID_ROOT/kernel/fairphone/sm7225/arch/arm64/configs/lineage_FP4_defconfig```  
+
 **Important: Don't forget to commit changes to prevent the dirty flag** 
+```
+HABUILD_SDK $
+
+cd $ANDROID_ROOT/kernel/fairphone/*/
+git add . 
+git commit "Changed some kernel flags."
+```
 
 -----
-# Install SDK-targets and SDK-tooling
+# Packaging/building SailfishOS
+  + [Building packages in PLATFORM_SDK](#building-packages-in-platform_sdk)
+  + [Generating an updater .zip](#generating-an-updater-zip)
+  + [init script](#init-script) 
+- [Flashing SailfishOS](#packaging-building-sailfishos)
+
+## Install SDK-targets and SDK-tooling
 Now that everything is synced and built, we are ready to install the remaining platform sdk-tools
 ```
 PLATFORM_SDK $
@@ -257,7 +268,7 @@ sdk-assistant create SailfishOS-4.5.0.18 https://releases.sailfishos.org/sdk/tar
 sdk-assistant create $VENDOR-$DEVICE-$PORT_ARCH https://releases.sailfishos.org/sdk/targets/Sailfish_OS-4.5.0.18-Sailfish_SDK_Target-aarch64.tar.7z
 ```
 
-# Setting up rpm
+## Cloning the "standard" configurations
 
 Since the targets and tooling work we are ready to set up the rpm-configuration. To do that, we need to clone the repositories containing the FP4 rpm-configuration.
 ```
@@ -268,20 +279,22 @@ git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/dro
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-configs-FP4.git hybris/droid-configs
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-hal-version-FP4.git hybris/droid-hal-version-FP4
 git clone --recurse-submodules git@github.com:Sailfishos-for-the-fairphone-4/hybris-installer hybris/hybris-installer/
-
-git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/parse-android-dynparts.git hybris/parse-android-dynparts
-
 ```
 
 
-# Building packages in PLATFORM_SDK
-
+# Building middleware packages
+#### Android Dynamic Partitions
+```
+git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/parse-android-dynparts.git hybris/parse-android-dynparts
 rpm/dhd/helpers/build_packages.sh --build=hybris/parse-android-dynparts -s rpm/parse-android-dynparts.spec
+```
 
-# TODO:
-rpm/dhd/helpers/build_packages.sh --build=hybris/hidl_audio -s rpm/hidl_audio.spec
-
-add fingerprint deamon
+#### Hidl Audio Fix
+```
+git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/hidl_audio.git hybris/mw/hidl_audio
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/hidl_audio -s rpm/hidl_audio.spec
+```
+#### Fingerprint deamon
  
 HABUILD
 make libbiometry_fp_api 
