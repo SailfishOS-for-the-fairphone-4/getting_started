@@ -1,50 +1,60 @@
-# Getting Started
-- [Requirements](#requirements)
-  + [Host Device](#host-device)
-  + [To-Be-Installed Packages](#to-be-installed-packages)
-  + [Build Info](#build-info)
-- [Setting up the SDKs](#setting-up-the-sdks)
-  + [Setting up the Environment Variables](#setting-up-the-environment-variables)
-- [Setup the Platform SDK](#setup-the-platform-sdk)
-  + [Install Tooling](#install-tooling)
-  + [Setup the Android build Environment](#setup-the-android-build-environment)
-- [Building the Android Hardware Abstraction Layer](#building-the-android-hardware-abstraction-layer)
-  + [Sourcing the Android Base](#sourcing-the-android-base)
-  + [Syncing the Android Base](#syncing-the-android-base)
-- [Configuring partitions and kernel configuration](#configuring-partitions-and-kernel-configuration)
-- [Building boot and recovery image](#building-boot-and-recovery-image)
-- [Fixing errors in kernelconfiguration](#fixing-errors-in-kernelconfiguration)
-- [Install SDK-targets](#install-sdk-targets)
-- [Check target and tooling installation](#check-target-and-tooling-installation)
-- [Setting up rpm](#setting-up-rpm)
-- [Building packages in PLATFORM_SDK](#building-packages-in-platform_sdk)
-- [Generating an updater .zip](#generating-an-updater-zip)
-  * [init script](#init-script)
+# Introduction
 
+You will be building SailfishOS for the Fairphone 4. In te global scheme of things, there are 4 major steps in this proces:
+  1) Setting up the develop/build environment (SDK's) 
+  3) Sourcing and Building relevant bits of your chosen Android base (LineageOS 18.1)
+  4) Packaging/building SailfishOS
+  5) Flashing SailfishOS
+
+Here is some usefull literature you might need: 
+- Official SailfishOS Hardware Adaptation Development Kit [Page](https://docs.sailfishos.org/Develop/HADK/) 
+- Unofficial [hadk-hot](https://etherpad.wikimedia.org/p/hadk-hot)  
+- The [sfos-porters](https://piggz.co.uk/sailfishos-porters-archive/index.php) archive 
+- If you're using [LineageOS](https://wiki.lineageos.org/devices/FP4/) as your Android base  
+
+We are going to try to guide you through it. Goodluck!
+  
 ## Requirements
-### Host Device 
-- Linux x86 64-bit
-- 200gb of storage
+### Host Device
+- Minimal **Linux x86 64-bit** installation
+- ~200gb of storage
 - Preferably 16gb of ram
 
 ### To-Be-Installed Packages
 - curl
 - git
-- cpio
-- ccache
+ 
+# Table of Contents
+- [Setting up the SDKs](#setting-up-the-sdks)
+  + [Setting up the Environment Variables](#setting-up-the-environment-variables)
+  + [Setup the Platform SDK](#setup-the-platform-sdk)
+  + [Setup the Android build Environment](#setup-the-android-build-environment)
+  + [Install Tools](#install-tools)
+- [Sourcing and Building relevant bits of your chosen Android base](#sourcing-and-building-relevant-bits-of-your-chosen-android-base)
+  + [Sourcing the Android Base](#sourcing-the-android-base)
+  + [Syncing the Android Base](#syncing-the-android-base)
+  + [Patching the Android Base](#patching-the-android-base)
+  + [Building boot and recovery image](#building-boot-and-recovery-image)
+  + [Check Kernel Configuration](#fixing-errors-in-kernelconfiguration)  
+- [Packaging/building SailfishOS](#packaging-building-sailfishos)
+  + [Install SDK-targets](#install-sdk-targets)
+  + [Setting up rpm](#setting-up-rpm)
+  + [Building packages in PLATFORM_SDK](#building-packages-in-platform_sdk)
+  + [Generating an updater .zip](#generating-an-updater-zip)
+  + [init script](#init-script) 
+- [Flashing SailfishOS](#packaging-building-sailfishos)
+  + yoyoyo  
+  
+-----
+# Setting up the SDK’S  
+To mark in which environment we are working, we use the notation showed down below:
+```
+<environment> $
+```  
 
-### Build Info
-- Android-base: LineageOS-18.1
-- Port: SailfishOS
-
-## Setting up the SDK’S
-### Setting up the Environment Variables
-Before we are starting setting up the SDK’s, we need to make sure some environment
-variables are set to our specific situation. In our case this results in the next code-block:
-
-To mark in which environment we are working, we use this “ENVIRONMENT $”
-notation.
-
+## Setting up the Environment Variables
+Before we can start installing the SDK’s, we need to make sure some environment
+variables are written to some files. In our case (Fairhone 4):
 ```
 HOST $
 
@@ -54,19 +64,16 @@ export VENDOR="fairphone"
 export DEVICE="FP4"
 export PORT_ARCH="aarch64"
 EOF
-```
-
-```
-HOST $
 
 cat << 'EOF' >> $HOME/.mersdkubu.profile
 function hadk() { source $HOME/.hadk.env; echo "Env setup for $DEVICE"; }
 export PS1="HABUILD_SDK [\${DEVICE}] $PS1"
 hadk
 EOF
-```
+```  
+
 ## Setup the Platform SDK
-Now we going to set up the Platform SDK. This next code-block will do everything like a "quick start". With this we will initialize, create and enter the "new" PlatformSDK.
+Now we are going to set up the Platform SDK. With the codeblock down below we will donwload, unpack, initialize and enter the "new" PlatformSDK.
 
 ```
 HOST $
@@ -93,24 +100,12 @@ EOF
 source ~/.bashrc
 sfossdk
 ```
-The sfossdk at the end of the funtion is used to enter the PlatformSDK 
-environment.
+Run ```sfossdk``` to enter the Platform SDK.  
+To confirm you succesfully entered the Platform SDK, the terminal should show: **PlatformSDK \<name-of-machine\> ~$**  
+To exit this environment:  ```CTRL+D``` or ```exit```  
 
-### Install Tooling
-We need to install a couple of tools which are not installed by default.
-
-Run the next code-block to install these tools:
-```
-PLATFORM_SDK $
-
-sudo zypper in android-tools-hadk kmod createrepo_c
-```
-
-Great we successfully set up the PlatformSDK. We entered the PlatformSDK, so
-we can continue to the next part of this guide!
-
-### Setup the Android build Environment
-
+## Setup the Android build Environment
+Now we are going to set up the HABUILD enviroment. With the codeblock down below we will donwload, unpack, initialize and enter the "new" HABUILD enviroment.
 ```
 PLATFORM_SDK $
 
@@ -119,20 +114,40 @@ curl -O https://releases.sailfishos.org/ubu/$TARBALL
 UBUNTU_CHROOT=$PLATFORM_SDK_ROOT/sdks/ubuntu
 sudo mkdir -p $UBUNTU_CHROOT
 sudo tar --numeric-owner -xjf $TARBALL -C $UBUNTU_CHROOT
-```
 
-We can now enter the Android Build environment using:
+ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu
+```
+Run ```ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu``` to enter the HABUILD enviroment.  
+To confirm you succesfully entered the HABUILD enviroment, the terminal should show: **HABUILD[FP4] \<name-of-machine\> ~$**
+To exit this environment:  ```CTRL+D``` or ```exit```  
+
+## Install Tools
+We need to install two tools which are not installed by default. Make sure you are in the **PLATFORM_SDK**!
 
 ```
 PLATFORM_SDK $
 
-ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu
+sudo zypper in android-tools-hadk kmod createrepo_c
 ```
 
-## Building the Android Hardware Abstraction Layer
+```
+PLATFORM_SDK $
+
+mkdir -p ~/bin
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+chmod a+x ~/bin/repo
+source $HOME/.profile
+```
+We run ```source $HOME/.profile``` to update the environment. This makes sure that ~/bin is included in the path variable.
+
+
+Great! We successfully set up both SDK's!  
+  
+-----
+## Sourcing and Building relevant bits of your chosen Android base
 ### Sourcing the Android Base
 
-We first need to setup our name and emailadress in the git-configuration.
+In order to continue (and use the the Android "repo" command), we need to setup Git with some basic confguration:
 ```
 HABUILD_SDK $
 
@@ -141,19 +156,7 @@ git config --global user.email "you@example.com"
 git config --global color.ui "auto"
 ```
 
-After configuring the git-configuration, we need the Android Repo tool for the next steps.
-```
-HABUILD_SDK $
-
-mkdir -p ~/bin
-curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-chmod a+x ~/bin/repo
-source $HOME/.profile
-```
-
-We run ```source $HOME/.profile``` to update the environment. This makes sure that ~/bin is included in the path variable.
-
-Now that the repo command has been setup. We can use it to clone the LineageOS android-base. 
+After configuring Git, we can start sourcing the Android base. We use ```repo init``` to initialize the repository we are going to use:
 ```
 HABUILD_SDK $
 
@@ -162,51 +165,47 @@ sudo chown -R $USER $ANDROID_ROOT
 cd $ANDROID_ROOT
 repo init -u https://www.github.com/Sailfishos-for-the-fairphone-4/android.git -b hybris-18.1
 ```
+This creates a **hidden** "repo" folder (in $ANDROID_ROOT). In the "Manifests" folder there are `.xml` files which are used to configure the paths to the source of the Android base. This folder is divided in three (manifest)-files: 
+* snippets/lineage.xml  (LineageOS specific configurations)
+* default.xml           (AOSP specific configurations)
+* $DEVICE.xml           (of FP4.xml, Fairphone 4 specific configurations)
 
-This creates a hidden .repo folder where the configuration is stored. This folder also contains a default.xml file which is used to configure the locations from where we obtain our android base.
-
-### Syncing the Android Base
-
-In the .repo folder which we initialized in the previous step, contains `.xml` files. These files are called Manifest files. We now have 3 manifest files: 
-* snippets/lineage.xml
-* default.xml
-* $DEVICE.xml (this case: FP4.xml)
-
-The $DEVICE.xml file is a device specific manifest file. We need to copy this file to a new directory: `local_manifests`
-
+We need to copy the $DEVICE.xml file to a new directory: `local_manifests`
 ```
 HABUILD_SDK $
 
 mkdir -p $ANDROID_ROOT/.repo/local_manifests && cp $ANDROID_ROOT/.repo/manifests/FP4.xml $ANDROID_ROOT/.repo/local_manifests/FP4.xml
 ```
-Now we are ready to "sync and build" the repo's that are configured in the manifest files. To do this, we need to run:
+Now we are ready to "sync and build" the repo's that are configured in the manifest files.
 
+### Syncing the Android Base
+To sync all the configured repositories, we run the next command:
 ```
 HABUILD_SDK $
 
 repo sync --fetch-submodules
 ```
-----
-#### Errors while running `repo sync --fetch-submodules`
+OR  
+  
+**Errors while running `repo sync --fetch-submodules`**
 *error: Cannot fetch . . . (GitError: –force-sync not enabled; cannot overwrite a local work tree.*, usually
 happens if repo sync --fetch-submodules gets interrupted. It is a bug of the repo tool. Ensure
 all your changes have been safely stowed (check with repo status), and then workaround by:
-
 ```
 HABUILD_SDK $
+
 repo sync --force-sync
-repo sync --fetch-submodules
 ```
+
+The expected disk usage for the source tree after sync is **~120 GB**. Depending on your connection, this might take some time. In the meantime, you could make yourself familiar with the rest of this guide :)  
+
 ----
-
-The expected disk usage for the source tree after sync is **~120 GB**. Depending on your connection, this might take some time. In the meantime, you could make yourself familiar with the rest of this guide.
-
-We are now going to apply the hybris patches to our codebase, so that the default lib-hybris gets configured to work with our specific android base version.
-
+## Patching the Android base
+We do not need the complete Android base for SailfishOS. Mer-Hybris provides the [hybris-patches repo](https://github.com/mer-hybris/hybris-patches/tree/e7fac67471028463d9eaaced51f13f40a86262f6) which patch the (already sourced) Android base.
 ```
 HABUILD_SDK $
 
-cd $ANDROID_ROOT/
+cd $ANDROID_ROOT
 ./hybris-patches/apply-patches.sh --mb
 ```
 
@@ -221,25 +220,13 @@ sed  -i "s/CalendarTests/CalendarCommonTests/" platform_testing/build/tasks/test
 We need to change the already existing CalendarTests to CalendarCommonTests.
 This because we don't use the LineageOS calendar, but the AOSP calendar, so then we need to test the AOSP calendar.
 
-# Configuring partitions and kernel configuration
-
-
-
-Since we made changes to the kernel we need to commit these changes to prevent a dirty flag notation in the kernel version
-```
-HABUILD_SDK $
-
-cd $ANDROID_ROOT/kernel/fairphone/sm7225/arch/arm64/configs
-
-git add .
-git commit -m "Setup FP4 configuration"
-
-```
+-----
 # Building boot and recovery image
-Now we are ready to start building everything we sourced and synced so far:
+Now we are ready to start building everything we sourced and synced so far: and run in bash script
 ```
 HABUILD_SDK $
-
+```  
+```
 cd $ANDROID_ROOT
 source build/envsetup.sh
 breakfast $DEVICE
@@ -248,8 +235,8 @@ make -j$(nproc --all) hybris-hal droidmedia
 
 This command will take a long time. This preferably runs with 16GB of RAM and and takes around 60GB of storage to complete the build.
 
-
-# Fixing errors in kernelconfiguration 
+-----
+# Configuring the built kernel 
 ```
 HABUILD_SDK $
 cd $ANDROID_ROOT
@@ -260,7 +247,8 @@ In case of errors; fix and recompile. Warning can be fixed later.
 Fixes need te be made in ```$ANDROID_ROOT/kernel/fairphone/sm7225/arch/arm64/configs/lineage_FP4_defconfig```
 **Important: Don't forget to commit changes to prevent the dirty flag** 
 
-# Install SDK-targets
+-----
+# Install SDK-targets and SDK-tooling
 Now that everything is synced and built, we are ready to install the remaining platform sdk-tools
 ```
 PLATFORM_SDK $
@@ -268,39 +256,6 @@ PLATFORM_SDK $
 sdk-assistant create SailfishOS-4.5.0.18 https://releases.sailfishos.org/sdk/targets/Sailfish_OS-4.5.0.18-Sailfish_SDK_Tooling-i486.tar.7z
 sdk-assistant create $VENDOR-$DEVICE-$PORT_ARCH https://releases.sailfishos.org/sdk/targets/Sailfish_OS-4.5.0.18-Sailfish_SDK_Target-aarch64.tar.7z
 ```
-#  Check target and tooling installation
-To test if the targets and tooling are installed correctly you can run:
-
-```
-PLATFORM_SDK $
-
-cd $HOME
-mkdir hadk-test-tmp
-cd hadk-test-tmp
-cat > main.c << EOF
-#include <stdlib.h>
-#include <stdio.h>
-int main(void) {
-  printf("Hello, world!\n");
-  return EXIT_SUCCESS;
-}
-EOF
-
-mb2 -t $VENDOR-$DEVICE-$PORT_ARCH build-init
-mb2 -t $VENDOR-$DEVICE-$PORT_ARCH build-shell gcc main.c -o test
-```
-
-If the compilation was successful you can test the executable by running the following command (this will run the
-executable using qemu as emulation layer, which is part of the mb2 setup):
-
-```
-PLATFORM_SDK $
-
-mb2 -t $VENDOR-$DEVICE-$PORT_ARCH build-shell ./test
-```
-
-The above command should output “Hello, world!” on the console, this proves that the build tools can compile
-binaries and execute them for your architecture.
 
 # Setting up rpm
 
