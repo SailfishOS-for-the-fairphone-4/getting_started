@@ -3,7 +3,7 @@
 We will be building SailfishOS for the Fairphone 4. In te global scheme of things, there are 4 major steps in this proces:
   1) Setting up the develop/build environment (SDK's) 
   3) Sourcing and Building relevant bits of your chosen Android base (LineageOS 18.1)
-  4) Packaging/building SailfishOS
+  4) Packaging/building SailfishOS (SailfishOS 4.5.0.18)
   5) Flashing SailfishOS
 
 Here is some usefull literature: 
