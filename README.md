@@ -35,15 +35,13 @@ We are going to try to guide you through it. Goodluck!
   + [Syncing the Android Base](#syncing-the-android-base)
   + [Patching the Android Base](#patching-the-android-base)
   + [Building boot and recovery image](#building-boot-and-recovery-image)
-  + [Check Kernel Configuration](#fixing-errors-in-kernelconfiguration)  
+  + [Check Kernel Configuration](#check-kernel-configuration)  
 - [Packaging/building SailfishOS](#packaging-building-sailfishos)
   + [Install SDK-targets](#install-sdk-targets)
   + [Setting up rpm](#setting-up-rpm)
-  + [Building packages in PLATFORM_SDK](#building-packages-in-platform_sdk)
+  + [Building packages in PLATFORM_SDK](#building-packages-in-platform-sdk)
   + [Generating an updater .zip](#generating-an-updater-zip)
   + [init script](#init-script) 
-- [Flashing SailfishOS](#packaging-building-sailfishos)
-  + 
   
 -----
 # Setting up the SDK’S  
@@ -254,11 +252,6 @@ git commit "Changed some kernel flags."
 
 -----
 # Packaging/building SailfishOS
-  + [Building packages in PLATFORM_SDK](#building-packages-in-platform_sdk)
-  + [Generating an updater .zip](#generating-an-updater-zip)
-  + [init script](#init-script) 
-- [Flashing SailfishOS](#packaging-building-sailfishos)
-
 ## Install SDK-targets and SDK-tooling
 Now that everything is synced and built, we are ready to install the remaining platform sdk-tools
 ```
