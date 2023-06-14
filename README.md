@@ -352,9 +352,9 @@ We need TWRP to flash the generated .zip and perform various formatting on the p
 ## Fastboot and ADB
 Fastboot is a protocol used by Android devices that allows users to flash firmware or install custom software onto the device. It is a tool included as part of the Android SDK (Software Development Kit) and typically used with the ADB (Android Debug Bridge) tool. We need Fastboot to flash the genrated hybris-boot.img. 
 
-ADB (Android Debug Bridge) is a command-line tool that is part of the Android SDK (Software Development Kit). It allows developers and advanced users to communicate with an Android device over a USB connection and execute various commands on the device. We need ADB to push generated (.zip) files to the phone.
+ADB (Android Debug Bridge) is a command-line tool that is part of the Android SDK (Software Development Kit). It allows developers and advanced users to communicate with an Android device over a USB-connection and execute various commands on the device. We need ADB to push generated (.zip) files to the phone.
 
-We can donwload these tools from the official LineageOS website (LineageOS)[] manually. Make sure you add the destination of these tool in the $PATH variable. 
+We can download these tools from the official [LineageOS website](https://wiki.lineageos.org/adb_fastboot_guide) manually. Make sure you add the destination of these tool in the $PATH variable. 
 If you don't want to bother with this step and use Linux/Ubuntu. You can use ```sudo apt install fastboot adb```. 
 
 ## Flashing
@@ -365,7 +365,7 @@ If you don't want to bother with this step and use Linux/Ubuntu. You can use ```
     * Enter TWRP by navigating to the ```Recovery Mode``` in Fastboot/bootloader
 3. In TWRP
     * Navigate to ```wipe``` > ```Format Data``` and type "yes" to format data.
-    * Navigate to ```mount``` and check off ```system```
+    * Navigate to ```mount``` and enable the checkbox ```system```
 4. With ADB from the host-device (laptop/computer).
     * Push the generated .zip file (containing SailfishOS rootfs) to the externel_sd of the Fairphone 4:
         * ```adb push <file-to-push> external_sd```
@@ -382,17 +382,17 @@ To prevent confusion, we flash both partitions (_a and _b) of the recovery and b
 
 
 # Known Issues
-### Voltage limit reached with speaker
-If the volume is set to 100% and you play a loud audio, there is a voltage peak where it reaches its limit and the Fairphone will crash. You then need to simply reboot, and everything will work again. (This is replicable when playing the yolla remix ringtone at 100% volume)
+### Current limit reached with speaker
+If the volume is set to 100% and you play a loud audio, there is a current peak where it reaches its limit and the Fairphone will crash. You then need to simply boot, and everything will work again. (This is replicable when playing the yolla remix ringtone at 100% volume)
 
 ### Broken Lockscreen
 Sometimes the lockscreen does not work correctly and will show an endless loading circle. In that case, the phone has already booted and you can just swipe to unlock.
 
 ### Simcard lock is not supported
-It is not possible (at the time of writing: 14-06-2023) to use a locked simcard. This is a problem in Sailfish OS, because Sailfish does not support the simcard unlock screen. To be able to use a simcard, you will need to remove the simcard pincode before inserting it in the Fairphone.
+It is not possible (at the time of writing: 14-06-2023) to use a locked simcard. This is a problem in SailfishOS, because Sailfish does not support the simcard unlock screen. To be able to use a simcard, you will need to remove the simcard pincode before inserting it in the Fairphone.
 
 ### Booting with broken audio
-Whenever audio is corrupt, the phone needs to rebooted 3 times in order for it to start.
+Whenever audio is corrupt, the phone needs to be booted 3 times in order for it to start.
 
 ### Failed startup
 When the phone takes longer than 60 seconds or the backlight turns off, the phone has failed to startup. In this state, you can only use the USB-interface. If this also doens't work, then you can only reboot or flash a new image.
