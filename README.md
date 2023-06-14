@@ -44,7 +44,9 @@ We are going to try to guide you through it. Goodluck!
       - [Hidl Audio Fix](#hidl-audio-fix)
       - [Fingerprint deamon (TODO)](#fingerprint-deamon--todo-)
   * [Package SailfishOS](#package-sailfishos)
-  
+- [Flashing SailfishOS](#flashing-sailfishos)
+- [Known Issues](#known-issues)
+
 -----
 # Setting up the SDK’S  
 To mark in which environment we are working, we use the notation showed down below:
