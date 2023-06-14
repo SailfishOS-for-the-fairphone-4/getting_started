@@ -342,6 +342,41 @@ rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
 
 # Flashing SailfishOS
 
+## TWRP
+TWRP (Team Win Recovery Project) is a custom recovery image for Android devices, which is used to perform various maintenance and recovery tasks on the device. TWRP is a powerful tool for advanced Android users who want to perform customizations and maintenance on their device. 
+
+We need TWRP to flash the generated .zip and perform various formatting on the phone.
+
+## Fastboot and ADB
+Fastboot is a protocol used by Android devices that allows users to flash firmware or install custom software onto the device. It is a tool included as part of the Android SDK (Software Development Kit) and typically used with the ADB (Android Debug Bridge) tool. We need Fastboot to flash the genrated hybris-boot.img. 
+
+ADB (Android Debug Bridge) is a command-line tool that is part of the Android SDK (Software Development Kit). It allows developers and advanced users to communicate with an Android device over a USB connection and execute various commands on the device. We need ADB to push generated (.zip) files to the phone.
+
+We can donwload these tools from the official LineageOS website (LineageOS)[] manually. Make sure you add the destination of these tool in the $PATH variable. 
+If you don't want to bother with this step and use Linux/Ubuntu. You can use ```sudo apt install fastboot adb```. 
+
+## Flashing
+1. Generate the .zip files, corresponding to the SailfishOS rootfs.
+2. Flash TWRP to the phone 
+    * In fastboot/bootloader:
+        * ```fastboot flash recovery_a <twrp-recovery-name>.img && fastboot flash recovery_b <twrp-recovery-name>.img ```
+    * Enter TWRP by navigating to the ```Recovery Mode``` in Fastboot/bootloader
+3. In TWRP
+    * Navigate to ```wipe``` > ```Format Data``` and type "yes" to format data.
+    * Navigate to ```mount``` and check off ```system```
+4. With ADB from the host-device (laptop/computer).
+    * Push the generated .zip file (containing SailfishOS rootfs) to the externel_sd of the Fairphone 4:
+        * ```adb push <file-to-push> external_sd```
+5. In TWRP
+    * Navigate to ```Install``` and select the pushed zip in the previous step and enter ```Install zip``` 
+6. After installing SailfishOS on the phone in TWRP. ```Reboot``` to ```fastboot/bootloader```.
+7. In Fastboot/bootloader:
+    * Flash the generated hybris-boot.img:
+        * ```fastboot flash boot_a <path-of-hybris-boot>.img && fastboot flash boot_b <path-of-hybris-boot>.img```
+8. In fastboot/bootloader:
+    * Start the device.
+
+To prevent confusion, we flash both partitions (_a and _b) of the recovery and boot.
 
 
 # Known Issues
