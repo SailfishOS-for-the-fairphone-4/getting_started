@@ -345,10 +345,36 @@ rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
 
 
 # Known Issues
+## Voltage limit reached with speaker
+If the volume is set to 100% and you play a loud audio, there is a voltage peak where it reaches its limit and the Fairphone will crash. You then need to simply reboot, and everything will work again. (This is replicable when playing the yolla remix ringtone at 100% volume)
+
+## Broken Lockscreen
+Sometimes the lockscreen does not work correctly and will show an endless loading circle. In that case, the phone has already booted and you can just swipe to unlock.
+
+## Simcard lock is not supported
+It is not possible (at the time of writing: 14-06-2023) to use a locked simcard. This is a problem in Sailfish OS, because Sailfish does not support the simcard unlock screen. To be able to use a simcard, you will need to remove the simcard pincode before inserting it in the Fairphone.
+
+## Booting with broken audio
+Whenever audio is corrupt, the phone needs to rebooted 3 times in order for it to start.
+
+## Failed startup
+When the phone takes longer than 60 seconds or the backlight turns off, the phone has failed to startup. In this state, you can only use the USB-interface. If this also doens't work, then you can only reboot or flash a new image.
+
+## No splashcreen
+During startup, there is no splashscreen displayed.
 
 
 
+# Component specific known issues
 
+## Earpiece speaker does not work
+The earpiece speaker of the Fairphone does not work correctly when calling. 
+
+## Bluetooth is not working
+Bluetooth does not work at time of writing: 14-06-2023
+
+## Mobile network does not work
+Mobile network does not work in Sailfish version 4.5.0.18. In the newest version announced here: [[Release notes] Struven ketju 4.5.0.19](https://forum.sailfishos.org/t/release-notes-struven-ketju-4-5-0-19/15078). It is stated there has been a fix for IPv6-only mobile networks. Currently, there are no new latest toolings and targets availible for Sailfish verion 4.5.0.19 yet. see: [Index of /sdk/targets/](https://releases.sailfishos.org/sdk/targets/)
 
 
 
