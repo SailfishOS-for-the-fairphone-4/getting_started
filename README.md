@@ -326,6 +326,25 @@ export RELEASE=4.5.0.18
 rpm/dhd/helpers/build_packages.sh --mic
 ```
 
+#### Fingerprint deamon (TODO)
+ 
+HABUILD
+make libbiometry_fp_api 
+make fake_crypt
+
+SFOSSDK
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community --spec=rpm/droid-biometry-fp.spec
+OR
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community --spec=rpm/droid-fake-crypt.spec
+or
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
+
+
+# Flashing SailfishOS
+
+
+
+# Known Issues
 
 
 
