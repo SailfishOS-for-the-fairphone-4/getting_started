@@ -38,7 +38,7 @@ We are going to try to guide you through it. Goodluck!
   * [Configuring the built kernel](#configuring-the-built-kernel)
 - [Packaging and building SailfishOS](#packaging-and-building-sailfishos)
   * [Install SDK-targets and SDK-tooling](#install-sdk-targets-and-sdk-tooling)
-  * [Cloning the "standard" configurations](#cloning-the--standard--configurations)
+  * [Cloning the standard configurations](#cloning-the-standard-configurations)
   * [Building middleware packages](#building-middleware-packages)
       - [Android Dynamic Partitions](#android-dynamic-partitions)
       - [Hidl Audio Fix](#hidl-audio-fix)
