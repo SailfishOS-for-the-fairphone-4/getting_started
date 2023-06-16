@@ -359,7 +359,7 @@ If you don't want to bother with this step and use Linux/Ubuntu. You can use ```
 
 ## Flashing
 1. Generate the .zip files, corresponding to the SailfishOS rootfs.
-2. Flash TWRP to the phone 
+2. Flash TWRP ( [recovery.img](./recovery.img) ) to the phone 
     * In fastboot/bootloader:
         * ```fastboot flash recovery_a <twrp-recovery-name>.img && fastboot flash recovery_b <twrp-recovery-name>.img ```
     * Enter TWRP by navigating to the ```Recovery Mode``` in Fastboot/bootloader
