@@ -395,5 +395,8 @@ When the phone takes longer than 60 seconds or the backlight turns off, the phon
 ### No splashcreen
 During startup, there is no splashscreen displayed.
 
+### Earpiece speaker bug
+When you're on a phone call. The earpiece microphone does not work. To fix this, toggle speaker mode on and off. Afterwards it works like normal. (THIS IS NEEDED FOR EVERY PHONE CALL)
+
 ### Mobile network does not work
 Mobile network does not work in Sailfish version 4.5.0.18. In the newest version announced here: [[Release notes] Struven ketju 4.5.0.19](https://forum.sailfishos.org/t/release-notes-struven-ketju-4-5-0-19/15078). It is stated there has been a fix for IPv6-only mobile networks. Currently, there are no new latest toolings and targets availible for Sailfish verion 4.5.0.19 yet. see: [Index of /sdk/targets/](https://releases.sailfishos.org/sdk/targets/)
