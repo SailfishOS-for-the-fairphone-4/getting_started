@@ -292,18 +292,24 @@ rpm/dhd/helpers/build_packages.sh --build=hybris/mw/hidl_audio -s rpm/hidl_audio
 ```  
 
 #### Fingerprint deamon (TODO)
- 
-HABUILD
-make libbiometry_fp_api 
-make fake_crypt
 
-SFOSSDK
-rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community --spec=rpm/droid-biometry-fp.spec
-OR
-rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community --spec=rpm/droid-fake-crypt.spec
-or
+```
+HABUILD $
+
+cd $ANDROID_ROOT
+git clone https://github.com/b100dian/fake_crypt/tree/keymaster41 hybris/mw/fake_crypt
+git clone https://github.com/sailfishos-open/sailfish-fpd-community.git hybris/mw/sailfish-fpd-community
+
+source build/envsetup.sh
+breakfast $DEVICE
+make libbiometry_fp_api fake_crypt
+```
+
+```
+SFOSSDK $
+hybris/mw/sailfish-fpd-community/rpm/copy-hal.sh
 rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
-
+```
 
 ## Package SailfishOS
 We use the ```build_packages.sh``` script in the ```$ANDROID_ROOT/rpm/dhd/helpers/``` to package SailfishOS. We could do this either by:  
