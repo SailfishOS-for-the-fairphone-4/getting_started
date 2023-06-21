@@ -377,6 +377,9 @@ To prevent confusion, we flash both partitions (_a and _b) of the recovery and b
 ### Current limit reached with speaker
 If the volume is set to 100% and you play a loud audio, there is a current peak where it reaches its limit and the Fairphone will crash. You then need to simply boot, and everything will work again. (This is replicable when playing the yolla remix ringtone at 100% volume)
 
+### Encryption
+There is no encryption.
+
 ### Broken Lockscreen
 Sometimes the lockscreen does not work correctly and will show an endless loading circle. In that case, the phone has already booted and you can just swipe to unlock.
 
