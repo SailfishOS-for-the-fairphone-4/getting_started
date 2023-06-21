@@ -42,7 +42,7 @@ We are going to try to guide you through it. Goodluck!
   * [Building middleware packages](#building-middleware-packages)
       - [Android Dynamic Partitions](#android-dynamic-partitions)
       - [Hidl Audio Fix](#hidl-audio-fix)
-      - [Fingerprint deamon (TODO)](#fingerprint-deamon--todo-)
+      - [Fingerprint deamon](#fingerprint-deamon)
   * [Package SailfishOS](#package-sailfishos)
 - [Flashing SailfishOS](#flashing-sailfishos)
 - [Known Issues](#known-issues)
