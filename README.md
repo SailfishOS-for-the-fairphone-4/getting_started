@@ -380,12 +380,6 @@ If the volume is set to 100% and you play a loud audio, there is a current peak 
 ### Encryption
 There is no encryption.
 
-### Broken Lockscreen
-Sometimes the lockscreen does not work correctly and will show an endless loading circle. In that case, the phone has already booted and you can just swipe to unlock.
-
-### Simcard lock is not supported
-It is not possible (at the time of writing: 14-06-2023) to use a locked simcard. This is a problem in SailfishOS, because Sailfish does not support the simcard unlock screen. To be able to use a simcard, you will need to remove the simcard pincode before inserting it in the Fairphone.
-
 ### Booting with broken audio
 Whenever audio is corrupt, the phone needs to be booted 3 times in order for it to start.
 
