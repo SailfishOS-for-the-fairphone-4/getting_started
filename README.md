@@ -297,7 +297,7 @@ rpm/dhd/helpers/build_packages.sh --build=hybris/mw/hidl_audio -s rpm/hidl_audio
 HABUILD $
 
 cd $ANDROID_ROOT
-git clone https://github.com/b100dian/fake_crypt/tree/keymaster41 hybris/mw/fake_crypt
+git clone https://github.com/b100dian/fake_crypt.git hybris/mw/fake_crypt --branch keymaster41
 git clone https://github.com/sailfishos-open/sailfish-fpd-community.git hybris/mw/sailfish-fpd-community
 
 source build/envsetup.sh
