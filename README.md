@@ -366,7 +366,7 @@ If you don't want to bother with this step and use Linux/Ubuntu. You can use ```
 6. After installing SailfishOS on the phone in TWRP. ```Reboot``` to ```fastboot/bootloader```.
 7. In Fastboot/bootloader:
     * Flash the generated hybris-boot.img:
-        * ```fastboot flash boot_a <path-of-hybris-boot>.img && fastboot flash boot_b <path-of-hybris-boot>.img```
+        * ```fastboot flash boot_a <file-name>.img && fastboot flash boot_b <file-name>.img```
 8. In fastboot/bootloader:
     * Start the device.
 
