@@ -12,6 +12,8 @@ Here is some usefull literature:
 - The [sfos-porters](https://piggz.co.uk/sailfishos-porters-archive/index.php) archive 
 - If you're using [LineageOS](https://wiki.lineageos.org/devices/FP4/) as your Android base  
 
+You can also use [this](https://github.com/SailfishOS-for-the-fairphone-4/sfbs-install) installer script, which does everything in this guide (except flashing) automatically. If you want additional middleware packages (like android_dyn_parts or sailfish-open/fpd-community) you need to install and build these manually with rpm/dhd/helpers/build_packages.sh.
+
 We are going to try to guide you through it. Goodluck!
   
 ## Requirements
@@ -380,11 +382,8 @@ If the volume is set to 100% and you play a loud audio, there is a current peak 
 ### Encryption
 There is no encryption.
 
-### Booting with broken audio
-Whenever audio is corrupt, the phone needs to be booted 3 times in order for it to start.
-
 ### Failed startup
-When the phone takes longer than 60 seconds or the backlight turns off, the phone has failed to startup. In this state, you can only use the USB-interface. If this also doens't work, then you can only reboot or flash a new image.
+When the phone takes longer than 60 seconds or the backlight turns off, the phone has failed to startup. In this state, you can only use the USB-interface. If this also doens't work, then you can only reboot or flash a new image. This issue rarely occurs.
 
 ### No splashcreen
 During startup, there is no splashscreen displayed.
@@ -395,4 +394,4 @@ When you're on a phone call. The earpiece microphone does not work. To fix this,
 ### Mobile network does not work
 Mobile network does not work in Sailfish version 4.5.0.18. In the newest version announced here: [[Release notes] Struven ketju 4.5.0.19](https://forum.sailfishos.org/t/release-notes-struven-ketju-4-5-0-19/15078). It is stated there has been a fix for IPv6-only mobile networks. Currently, there are no new latest toolings and targets availible for Sailfish verion 4.5.0.19 yet. see: [Index of /sdk/targets/](https://releases.sailfishos.org/sdk/targets/)
 
-### E-sim not supported by Sailfish OS and is therefore turned off
+### E-sim not supported by Sailfish OS and is therefore turned off by default
