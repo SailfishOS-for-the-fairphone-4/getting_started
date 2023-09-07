@@ -122,6 +122,7 @@ EOF
 ```
 
 When this is done you should have a file called .mersdkubu.profile in your $HOME directory with the following
+This will create a function called hadk #TODO explain what the function will do and why it is needed
 
 > ```
 > function hadk() { source HOME/.hadk.env; echo "Env setup for HOME/.hadk.env;echo"EnvsetupforDEVICE"; }
