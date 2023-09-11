@@ -27,27 +27,42 @@ We are going to try to guide you through it. Goodluck!
 - git
  
 # Table of Contents
-- [Setting up the SDK’S](#setting-up-the-sdk-s)
-  * [Setting up the Environment Variables](#setting-up-the-environment-variables)
-  * [Setup the Platform SDK](#setup-the-platform-sdk)
-  * [Setup the Android build Environment](#setup-the-android-build-environment)
-  * [Install Tools](#install-tools)
+- [Introduction](#introduction)
+  - [Requirements](#requirements)
+    - [Host Device](#host-device)
+    - [To-Be-Installed Packages](#to-be-installed-packages)
+- [Table of Contents](#table-of-contents)
+- [Setting up the SDK’S](#setting-up-the-sdks)
+  - [Setting up the Environment Variables](#setting-up-the-environment-variables)
+  - [Setup the Platform SDK](#setup-the-platform-sdk)
+  - [Setup the Android build Environment](#setup-the-android-build-environment)
+  - [Install Tools](#install-tools)
 - [Sourcing and Building relevant bits of your chosen Android base](#sourcing-and-building-relevant-bits-of-your-chosen-android-base)
-  * [Sourcing the Android Base](#sourcing-the-android-base)
-  * [Syncing the Android Base](#syncing-the-android-base)
-  * [Patching the Android base](#patching-the-android-base)
-  * [Building boot and recovery image](#building-boot-and-recovery-image)
-  * [Configuring the built kernel](#configuring-the-built-kernel)
+  - [Sourcing the Android Base](#sourcing-the-android-base)
+  - [Syncing the Android Base](#syncing-the-android-base)
+  - [Patching the Android base](#patching-the-android-base)
+  - [Building boot and recovery image](#building-boot-and-recovery-image)
+  - [Configuring the built kernel](#configuring-the-built-kernel)
 - [Packaging and building SailfishOS](#packaging-and-building-sailfishos)
-  * [Install SDK-targets and SDK-tooling](#install-sdk-targets-and-sdk-tooling)
-  * [Cloning the standard configurations](#cloning-the-standard-configurations)
-  * [Building middleware packages](#building-middleware-packages)
+  - [Install SDK-targets and SDK-tooling](#install-sdk-targets-and-sdk-tooling)
+  - [Cloning the "standard" configurations](#cloning-the-standard-configurations)
+  - [Building middleware packages](#building-middleware-packages)
       - [Android Dynamic Partitions](#android-dynamic-partitions)
       - [Hidl Audio Fix](#hidl-audio-fix)
       - [Fingerprint deamon](#fingerprint-deamon)
-  * [Package SailfishOS](#package-sailfishos)
+  - [Package SailfishOS](#package-sailfishos)
 - [Flashing SailfishOS](#flashing-sailfishos)
+  - [TWRP](#twrp)
+  - [Fastboot and ADB](#fastboot-and-adb)
+  - [Flashing](#flashing)
 - [Known Issues](#known-issues)
+    - [Current limit reached with speaker](#current-limit-reached-with-speaker)
+    - [Encryption](#encryption)
+    - [Failed startup](#failed-startup)
+    - [No splashcreen](#no-splashcreen)
+    - [Earpiece microphone bug](#earpiece-microphone-bug)
+    - [Mobile network does not work](#mobile-network-does-not-work)
+    - [E-sim not supported by Sailfish OS and is therefore turned off by default](#e-sim-not-supported-by-sailfish-os-and-is-therefore-turned-off-by-default)
 
 -----
 # Setting up the SDK’S  
@@ -160,7 +175,7 @@ git config --global user.email "you@example.com"
 git config --global color.ui "auto"
 ```
 
-After configuring Git, we can start sourcing the Android base. We use ```repo init``` to initialize the repository we are going to use:
+After configuring Git, we can start sourcing the Android base. *First we need to make a new folder this will be made by using the $ANDROID_ROOT variable. The -p ensures that the entire directory path specified by $ANDROID_ROOT is created. Then we need to give the user access to this folder and everything within. We change the directory to $ANDROID_ROOT.* We use ```repo init``` to initialize the repository we are going to use:
 ```
 HABUILD_SDK $
 
@@ -169,12 +184,14 @@ sudo chown -R $USER $ANDROID_ROOT
 cd $ANDROID_ROOT
 repo init -u https://www.github.com/Sailfishos-for-the-fairphone-4/android.git -b hybris-18.1
 ```
-This creates a **hidden** "repo" folder (in $ANDROID_ROOT). In the "Manifests" folder there are `.xml` files which are used to configure the paths to the source of the Android base. This folder is divided in three (manifest)-files: 
+This creates a **hidden** "repo" folder (in $ANDROID_ROOT) *The repository that is initialised is a fork of the branch [hybris-18.1](https://github.com/mer-hybris/android/tree/hybris-18.1) on the my-hybris android repo.* In the "Manifests" folder there are `.xml` files which are used to configure the paths to the source of the Android base. This folder is divided in three (manifest)-files: 
 * snippets/lineage.xml  (LineageOS specific configurations)
 * default.xml           (AOSP specific configurations)
 * $DEVICE.xml           (of FP4.xml, Fairphone 4 specific configurations)
 
-We need to copy the $DEVICE.xml file to a new directory: `local_manifests`
+We need to copy the $DEVICE.xml file to a new directory: `local_manifests`.
+*In this instance the filename is FP4.xml. First we need to make a new folder and then we copy the FP4.xml in that new folder.*
+
 ```
 HABUILD_SDK $
 
@@ -213,6 +230,13 @@ cd $ANDROID_ROOT
 ./hybris-patches/apply-patches.sh --mb
 ```
 Because we use a custom configurations, we removed the "Etar" repository from the configuration. Because of this, we need to change the "CalendarTests" (used for LineageOS/Etar Calendar) to "CalendarCommonTests" (used for AOSP calendar).
+
+*The sed command is used to perform text transformations on an input file or stream. The -i option tells ```sed``` to edit the file in place.* 
+
+*"s/CalendarTests/CalendarCommonTests/": This is a sed script that specifies what text transformation should be performed. It uses the s command, which stands for "substitute." It searches for the text "CalendarTests" in the input file and replaces it with "CalendarCommonTests."*
+
+*platform_testing/build/tasks/tests/platform_test_list.mk: This is the path to the file that you want to perform the substitution on.*
+
 ```
 $ HABUILD
 
@@ -224,6 +248,25 @@ We are done configuring the Android base!
 We can continue building the relevant bits of the Android base.  
 
 ## Building boot and recovery image
+*First we change directory to the $ANDROID_ROOT.*
+
+*source build/envsetup.sh:
+source: This command is used to execute the commands in the specified script in the current shell session.
+build/envsetup.sh: This script is used to set up environment variables and functions needed for building Android.*
+
+*breakfast $DEVICE:
+breakfast is a command used to configure the build for a specific device. (Used in LineageOS projects)*
+
+*$DEVICE: This is a variable that contains the name of the Android device you want to build for. Running this command selects the device configuration, so subsequent build commands know what to target.*
+
+*make -j$(nproc --all) hybris-hal droidmedia:*
+
+*make: This is a build automation tool used to compile and build software projects.*
+
+*-j$(nproc --all): This part specifies the number of CPU cores to use for parallel compilation. nproc --all is used to determine the number of available CPU cores, and -j is followed by that number to enable parallel compilation, which can significantly speed up the build process by utilizing multiple CPU cores.*
+
+*hybris-hal and droidmedia: These are build targets specific to the Android project you're working on. Make is instructed to build these specific components. "hybris-hal" refers to a component related to the hardware abstraction layer (HAL), and "droidmedia" is related to media handling in Android.*
+
 Now we are ready to start building everything we sourced and synced so far:
 ```
 HABUILD_SDK $
@@ -238,6 +281,7 @@ This command will take a long time. This preferably runs with 16GB of RAM and an
 
 ## Configuring the built kernel 
 After building previous process succesfully completed, we need to check wether the kernel configurations are correct.
+*The purpose of running this command is to use the mer_verify_kernel_config script to compare the contents of the three specified kernel configuration files. The script checks for any differences or inconsistencies between these configurations, which can be useful for ensuring that the kernel configuration is correct and consistent before building the kernel for the FairPhone.*
 ```
 HABUILD_SDK $
 
