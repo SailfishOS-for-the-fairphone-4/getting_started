@@ -1,21 +1,66 @@
 # Introduction
 
-We will be building SailfishOS for the Fairphone 4. In te global scheme of things, there are 4 major steps in this proces:
-  1) Setting up the develop/build environment (SDK's) 
-  3) Sourcing and Building relevant bits of your chosen Android base (LineageOS 18.1)
-  4) Packaging/building SailfishOS (SailfishOS 4.5.0.18)
-  5) Flashing SailfishOS
+Welcome to the port of SailfishOS for the fairphone 4.
 
-Here is some usefull literature: 
-- Official SailfishOS Hardware Adaptation Development Kit [Page](https://docs.sailfishos.org/Develop/HADK/) 
-- Unofficial [hadk-hot](https://etherpad.wikimedia.org/p/hadk-hot)  
-- The [sfos-porters](https://piggz.co.uk/sailfishos-porters-archive/index.php) archive 
-- If you're using [LineageOS](https://wiki.lineageos.org/devices/FP4/) as your Android base  
+This repository serves as an overview as to how everything fits together and how to get started in building the build environment and how to make your first changes.
 
-You can also use [this](https://github.com/SailfishOS-for-the-fairphone-4/sfbs-install) installer script, which does everything in this guide (except flashing) automatically. If you want additional middleware packages (like android_dyn_parts or sailfish-open/fpd-community) you need to install and build these manually with rpm/dhd/helpers/build_packages.sh.
+## Build Overview
 
-We are going to try to guide you through it. Goodluck!
-  
+To build SailfishOS for the Fairphone 4, there are 4 global steps which are further explained below.
+
+1. Setting up the develop/build environment (SDK's)
+1. Sourcing and Building relevant bits of your chosen Android base (LineageOS 18.1)
+1. Packaging/building SailfishOS (SailfishOS 4.5.0.18)
+1. Flashing SailfishOS
+
+## Overview of the different systems
+
+There are a number of different systems you'll be working with. This section serves as an overview of those systems, along with a short description of what they do and what they are used for.
+
+This section is simply an overview, a lot of information is sourced from [the sailfish HADK porting guide](https://docs.sailfishos.org/Develop/HADK/).
+
+### Lineage OS
+
+A lot of mobile phones run android. Unfortunately, most operating systems based on android are closed source and use google's proprietary implementation.
+
+Lineage OS is a free & open source operating system base. It contains the android base, along with the device drivers needed for the operating system.
+
+### Sailfish OS
+
+Sailfish OS is the higher-level operating system which runs on top of the Lineage OS base. It handles the user interaction and the user interface.
+
+### Hybris
+
+Hybris, or libhybris, is a compatibility layer for linux-based systems which enables you to run software that is written for android. This is mainly android libraries and device drivers.
+
+So, hybris is what allows android drivers to run on our linux backend.
+
+### SDK's
+
+In this implementation, we use 2 SDK's which you need to launch seperately in your shell.
+
+These SDK's are needed to build specific parts of the operating system, described below.
+
+#### Platform SDK
+
+The platform SDK is a development environment that includes build tools, like cross compilers, an emulated root filesystem(containing necessary drivers and programs for booting) and device-specific headers and libraries. It is used to build the following parts of the operating system.
+
+- RPM Packages
+- Hardware Middleware(Like PulseAudio)
+
+This is software that runs on the mobile phone, but isn't directly part of the kernel.
+
+#### HA Build SDK
+
+The HA Build SDK is mainly used to build the kernel and other low-level systems. It is basically a minimalistic ubuntu chroot, which are used to build android sources. It allows you to build the following parts.
+
+- The kernel
+- A modifiable [initrd file](https://www.kernel.org/doc/html/latest/admin-guide/initrd.html). In short: an initrd is an minimalistic root filesystem used in booting. It contains drivers, necessary programs and other stuff that is required to boot your operaring system.
+- The hybris boot and recovery images (containing the kernel and custom inird)
+- A base /system/ directory
+- Modified android parts for libhybris and sailfish os
+
+So this basically allows you to build the lower-levels of the operating system.
 ## Requirements
 ### Host Device
 - Minimal **Linux x86 64-bit** installation
