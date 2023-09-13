@@ -277,7 +277,7 @@ cd $ANDROID_ROOT
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-hal-device-FP4.git rpm
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-configs-FP4.git hybris/droid-configs
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/droid-hal-version-FP4.git hybris/droid-hal-version-FP4
-git clone --recurse-submodules git@github.com:Sailfishos-for-the-fairphone-4/hybris-installer hybris/hybris-installer/
+git clone --recurse-submodules git@github.com:Sailfishos-for-the-fairphone-4/hybris-installer.git hybris/hybris-installer/
 ```  
 
 ## Building middleware packages
