@@ -111,14 +111,21 @@ So this basically allows you to build the lower-levels of the operating system.
 
 -----
 # Setting up the SDK’S  
-To mark in which environment we are working, we use the notation showed down below:
+To mark the environment the user is currently working from, the notation marked below is used:
 ```
 <environment> $
 ```  
+Environment options used in this project:
+* HOST $
+* PLATFORM_SDK $
+* HABUILD_SDK $
 
 ## Setting up the Environment Variables
-Before we can start installing the SDK’s, we need to make sure some environment
-variables are written to some files. In our case (Fairhone 4):
+Before the installation of the Sailfish OS platform SDK and the HABUILD SDK (android), the environment variables need to be set to define the phone's properties. This is done by creating a new file (.hadk.env) containing the commands to create the variables.
+
+Additionaly the PS1(now your promt in the terminal) is changed to the environment of the device.
+Finaly the file is executed setting the environment variables.
+
 ```
 HOST $
 
@@ -137,7 +144,13 @@ EOF
 ```  
 
 ## Setup the Platform SDK
-Now we are going to set up the Platform SDK. With the codeblock down below we will donwload, unpack, initialize and enter the "new" PlatformSDK.
+Using the code segment below the PLATFORM_SDK environment will be created. The most recent version of Sailfish OS is downloaded, extracted, initialized and finaly the environment is switched to the new PLATFORM_SDK $ evironment.
+
+During this proces the alias ```sfossdk``` is created and points to a script called ```sdk-chroot``` within the Platform SDK chroot environment. This script is used to launch the Platform SDK chroot environment. The final step of this code block is executing the alias sfossdk. 
+
+To enter the Platform SDK environment in a later stage run ```sfossdk```.
+The terminal will display **PlatformSDK \<name-of-machine>\ ~$** when you succesfully entered the environment.
+To exit the environment type: ```CTRL+D``` or ```exit```  
 
 ```
 HOST $
@@ -164,12 +177,14 @@ EOF
 source ~/.bashrc
 sfossdk
 ```
-Run ```sfossdk``` to enter the Platform SDK.  
-To confirm you succesfully entered the Platform SDK, the terminal should show: **PlatformSDK \<name-of-machine\> ~$**  
-To exit this environment:  ```CTRL+D``` or ```exit```  
 
 ## Setup the Android build Environment
-Now we are going to set up the HABUILD enviroment. With the codeblock down below we will donwload, unpack, initialize and enter the "new" HABUILD enviroment.
+The next step is to set up the HABUILD enviroment. Usinge codeblock below we will donwload, unpack, initialize and switch to the new HABUILD enviroment.
+
+To enter the HABUILD environment in a later stage run ```ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu```.  
+To confirm you succesfully entered the HABUILD enviroment, the terminal should display: **HABUILD[FP4] \<name-of-machine\> ~$**
+To exit this environment:  ```CTRL+D``` or ```exit```  
+
 ```
 PLATFORM_SDK $
 
@@ -181,18 +196,21 @@ sudo tar --numeric-owner -xjf $TARBALL -C $UBUNTU_CHROOT
 
 ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu
 ```
-Run ```ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu``` to enter the HABUILD enviroment.  
-To confirm you succesfully entered the HABUILD enviroment, the terminal should show: **HABUILD[FP4] \<name-of-machine\> ~$**
-To exit this environment:  ```CTRL+D``` or ```exit```  
 
 ## Install Tools
-We need to install two tools which are not installed by default. Make sure you are in the **PLATFORM_SDK**!
+Finaly to coninue the setup we need to install the packages ```android-tools-hadk```, ```kmod``` and ```createrepo_c```. Make sure you run these commmands from the **PLATFORM_SDK** environment!
+
 
 ```
 PLATFORM_SDK $
 
 sudo zypper in android-tools-hadk kmod createrepo_c
 ```
+
+
+Using the code block below the following repo is downloaded and saved in the user bin folder. This repo is used to manage smaller repo's stored in different locations. Using this tool all repos can be pulled at the same time.
+
+Finaly run ```source $HOME/.profile``` to update the environment and 'apply' all changes made. Doing so will ensure that ~/bin is included in the path variable.
 
 ```
 PLATFORM_SDK $
@@ -202,10 +220,7 @@ curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
 chmod a+x ~/bin/repo
 source $HOME/.profile
 ```
-We run ```source $HOME/.profile``` to update the environment. This makes sure that ~/bin is included in the path variable.
-
-
-Great! We successfully set up both SDK's!  
+Great! Both SDK's are now set up!  
   
 -----
 # Sourcing and Building relevant bits of your chosen Android base
