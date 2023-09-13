@@ -2,7 +2,7 @@
 
 Welcome to the port of SailfishOS for the fairphone 4.
 
-This repository servers as an overview as to how everything fits together and how to get started in building the build environment and how to make your first changes.
+This repository serves as an overview as to how everything fits together and how to get started in building the build environment and how to make your first changes.
 
 ## Build Overview
 
@@ -43,7 +43,7 @@ These SDK's are needed to build specific parts of the operating system, describe
 
 #### Platform SDK
 
-The platform SDK is a development environment that includes build tools, like cross compilers, an emulated rootfs and device-specific headers and libraries. It is used to build the following parts of the operating system.
+The platform SDK is a development environment that includes build tools, like cross compilers, an emulated root filesystem(containing necessary drivers and programs for booting) and device-specific headers and libraries. It is used to build the following parts of the operating system.
 
 - RPM Packages
 - Hardware Middleware(Like PulseAudio)
@@ -55,7 +55,7 @@ This is software that runs on the mobile phone, but isn't directly part of the k
 The HA Build SDK is mainly used to build the kernel and other low-level systems. It is basically a minimalistic ubuntu chroot, which are used to build android sources. It allows you to build the following parts.
 
 - The kernel
-- A modifiable [initrd file](https://www.kernel.org/doc/html/latest/admin-guide/initrd.html). In short: an initrd is an initial root filesystem used in booting.
+- A modifiable [initrd file](https://www.kernel.org/doc/html/latest/admin-guide/initrd.html). In short: an initrd is an minimalistic root filesystem used in booting. It contains drivers, necessary programs and other stuff that is required to boot your operaring system.
 - The hybris boot and recovery images (containing the kernel and custom inird)
 - A base /system/ directory
 - Modified android parts for libhybris and sailfish os
