@@ -121,9 +121,6 @@ Environment options used in this project:
 * HABUILD_SDK $
 
 ## Setting up the Environment Variables
-Before we can start installing the SDK’s, WE N we need to make sure some environment
-variables are written to some files. In our case (Fairhone 4):
-
 Before the installation of the Sailfish OS platform SDK and the HABUILD SDK (android), the environment variables need to be set to define the phone's properties. This is done by creating a new file (.hadk.env) containing the commands to create the variables.
 
 Additionaly the PS1(now your promt in the terminal) is changed to the environment of the device.
@@ -149,7 +146,7 @@ EOF
 ## Setup the Platform SDK
 Using the code segment below the PLATFORM_SDK environment will be created. The most recent version of Sailfish OS is downloaded, extracted, initialized and finaly the environment is switched to the new PLATFORM_SDK $ evironment.
 
-During this proces the alias sfossdo is created and points to a script called 'sdk-chroot' within the Platform SDK chroot environment. This script is used to launch the Platform SDK chroot environment. The final step of this code block is executing the alias sfossdk. 
+During this proces the alias ```sfossdk``` is created and points to a script called ```sdk-chroot``` within the Platform SDK chroot environment. This script is used to launch the Platform SDK chroot environment. The final step of this code block is executing the alias sfossdk. 
 
 To enter the Platform SDK environment in a later stage run ```sfossdk```.
 The terminal will display **PlatformSDK \<name-of-machine>\ ~$** when you succesfully entered the environment.
@@ -222,8 +219,7 @@ mkdir -p ~/bin
 curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
 chmod a+x ~/bin/repo
 source $HOME/.profile
-
-
+```
 Great! Both SDK's are now set up!  
   
 -----
