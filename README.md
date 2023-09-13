@@ -352,7 +352,9 @@ git commit "Changed some kernel flags."
 -----
 # Packaging and building SailfishOS
 ## Install SDK-targets and SDK-tooling
-Now that everything is synced and built, we are ready to install the remaining platform sdk-tools
+Now that everything is synced and built, we are ready to install the remaining platform sdk-tools.
+First the SDK tool for the Sailfish_OS-4.5.8.18 will be installed, You will always install SDK tooling before SDK targets that depends on that tooling. Note that while SDK targets are target-cpu specific, SDK toolings are always i486 which is the only supported host platform.
+
 ```
 PLATFORM_SDK $
 
@@ -361,8 +363,8 @@ sdk-assistant create $VENDOR-$DEVICE-$PORT_ARCH https://releases.sailfishos.org/
 ```
 
 ## Cloning the "standard" configurations
-
-Since the targets and tooling work we are ready to set up the rpm-configuration. To do that, we need to clone the repositories containing the FP4 rpm-configuration.
+To install the OS we are using rpm (package manager for Linux, comparable to npm for javascript and pip for python).
+Before we can build the package we have to configure the rpm settings. To do that, we need to clone the repositories containing the rpm-configuration specific for the FP4. These also contains the configuration for when building the HAL.
 ```
 PLATFORM_SDK $
 
@@ -375,6 +377,7 @@ git clone --recurse-submodules git@github.com:Sailfishos-for-the-fairphone-4/hyb
 
 ## Building middleware packages
 #### Android Dynamic Partitions
+Allows mounting Android Dynamic Partitions files on Linux. Dynamic partitions are a userspace partitioning system for Android. Using this partitioning system, you can create, resize, or destroy partitions during over-the-air (OTA) updates. With dynamic partitions, vendors no longer have to worry about the individual sizes of partitions such as system, vendor, and product. Instead, the device allocates a super partition, and sub-partitions can be sized dynamically within it.
 ```
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/parse-android-dynparts.git hybris/parse-android-dynparts
 rpm/dhd/helpers/build_packages.sh --build=hybris/parse-android-dynparts -s rpm/parse-android-dynparts.spec
@@ -387,7 +390,7 @@ rpm/dhd/helpers/build_packages.sh --build=hybris/mw/hidl_audio -s rpm/hidl_audio
 ```  
 
 #### Fingerprint deamon
-
+implements the DBUS API of the Jolla sailfish-fpd packge to add fingerprint support to this port. first the build enviroment is configured using envsetup.sh. Then breakfast (commonly used for Android custom ROM development) is used to prepare the build for the specific device. After the preparation, make is used to compile the software after which it will use build_package.sh to build the package.
 ```
 HABUILD $
 
@@ -407,7 +410,7 @@ rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
 ```
 
 ## Package SailfishOS
-We use the ```build_packages.sh``` script in the ```$ANDROID_ROOT/rpm/dhd/helpers/``` to package SailfishOS. We could do this either by:  
+We use the ```build_packages.sh``` script in the ```$ANDROID_ROOT/rpm/dhd/helpers/``` to package SailfishOS. The packages are built by using the diffrent flags after which it will be build into an image using the --mic flag. We could do this either by:  
 
 Building everything at once:
 ```
@@ -428,6 +431,7 @@ rpm/dhd/helpers/build_packages.sh --version
 export RELEASE=4.5.0.18
 rpm/dhd/helpers/build_packages.sh --mic
 ```
+
 
 # Flashing SailfishOS
 
