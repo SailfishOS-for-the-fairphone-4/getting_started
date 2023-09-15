@@ -401,7 +401,7 @@ rpm/dhd/helpers/build_packages.sh --build=hybris/parse-android-dynparts -s rpm/p
 #### Hidl Audio Fix
 ```
 git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/hidl_audio.git hybris/mw/hidl_audio
-rpm/dhd/helpers/build_packages.sh --build=hybris/mw/hidl_audio -s rpm/hidl_audio.spec
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/hidl_audio -s rpm/hidl-audio.spec
 ```  
 
 #### Fingerprint deamon
