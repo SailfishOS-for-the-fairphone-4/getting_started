@@ -420,8 +420,8 @@ make libbiometry_fp_api fake_crypt
 
 ```
 PLATFORM_SDK $
-sfbootstrap/src/hybdris-18.1/hybris/mw/sailfish-fpd-community/rpm/copy-hal.sh
-sfbootstrap/src/hybdris-18.1/rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
+hybris/mw/sailfish-fpd-community/rpm/copy-hal.sh
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
 ```
 
 ## Package SailfishOS
