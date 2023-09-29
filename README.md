@@ -194,7 +194,7 @@ UBUNTU_CHROOT=$PLATFORM_SDK_ROOT/sdks/ubuntu
 sudo mkdir -p $UBUNTU_CHROOT
 sudo tar --numeric-owner -xjf $TARBALL -C $UBUNTU_CHROOT
 
-ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu
+# ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu
 ```
 
 ## Install Tools
