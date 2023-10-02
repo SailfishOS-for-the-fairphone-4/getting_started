@@ -194,7 +194,6 @@ UBUNTU_CHROOT=$PLATFORM_SDK_ROOT/sdks/ubuntu
 sudo mkdir -p $UBUNTU_CHROOT
 sudo tar --numeric-owner -xjf $TARBALL -C $UBUNTU_CHROOT
 
-# ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu
 ```
 
 ## Install Tools
@@ -205,6 +204,11 @@ Finaly to coninue the setup we need to install the packages ```android-tools-had
 PLATFORM_SDK $
 
 sudo zypper in android-tools-hadk kmod createrepo_c
+```
+
+After installing the tools, you can enter the HABUILD environment using the following command.
+```
+ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu
 ```
 
 
@@ -220,6 +224,15 @@ curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
 chmod a+x ~/bin/repo
 source $HOME/.profile
 ```
+
+If you haven't done so already, don't forget to add ~/bin to your $PATH.
+```
+PLATFORM_SDK $
+
+export PATH=/home/$USER/bin:$PATH
+```
+Make sure the $USER variable is set to your current user(which you can check by using `whoami`).
+
 Great! Both SDK's are now set up!  
   
 -----
