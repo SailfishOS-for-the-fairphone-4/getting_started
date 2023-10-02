@@ -175,6 +175,8 @@ fi
 EOF
 
 source ~/.bashrc
+
+# To enter PLATFORM_SDK, run:
 sfossdk
 ```
 
@@ -208,6 +210,8 @@ sudo zypper in android-tools-hadk kmod createrepo_c
 
 After installing the tools, you can enter the HABUILD environment using the following command.
 ```
+PLATFORM_SDK $
+
 ubu-chroot -r $PLATFORM_SDK_ROOT/sdks/ubuntu
 ```
 
