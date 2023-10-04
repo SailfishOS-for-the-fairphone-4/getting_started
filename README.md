@@ -100,6 +100,7 @@ So this basically allows you to build the lower-levels of the operating system.
   - [TWRP](#twrp)
   - [Fastboot and ADB](#fastboot-and-adb)
   - [Flashing](#flashing)
+- [Updating SailfishOS](#updating-sailfishos)
 - [Known Issues](#known-issues)
     - [Current limit reached with speaker](#current-limit-reached-with-speaker)
     - [Encryption](#encryption)
@@ -503,6 +504,35 @@ If you don't want to bother with this step and use Linux/Ubuntu. You can use ```
 
 To prevent confusion, we flash both partitions (_a and _b) of the recovery and boot.
 
+# Updating SailfishOS
+Updating SailfishOS is not very complicated.
+It involves a few minor steps.
+As mentioned in [the sailfish os docs](https://docs.sailfishos.org/Tools/Platform_SDK/Installation/#updating-the-sailfish-platform-sdk), it involves running a few commands in the sfossdk environment.
+
+```
+PLATFORM_SDK $
+
+sudo ssu re 4.5.0.24 # To update to 4.5.0.24
+sudo zypper ref
+sudo zypper dup
+```
+Next, make sure to download the right tooling and target versions in the 'Packaging and Building Sailfish OS' step.
+**NOTE: **the target and tooling versions might not be the same as you are trying to build.
+A new target and tooling version only gets released when changes are made to the sdk(which will be mentioned in the release notes for sailfishOS).
+If you are building the newest version, you can just use the latest version as mentioned below.
+
+```
+PLATFORM_SDK $
+
+sdk-assistant create SailfishOS-latest https://releases.sailfishos.org/sdk/targets/Sailfish_OS-latest-Sailfish_SDK_Tooling-i486.tar.7z
+sdk-assistant create $VENDOR-$DEVICE-$PORT_ARCH https://releases.sailfishos.org/sdk/targets/Sailfish_OS-latest-Sailfish_SDK_Target-aarch64.tar.7z
+```
+Lastly, set the `RELEASE` environment variable before building the packes in the 'Package Sailfish OS' step.
+```
+export RELEASE=4.5.0.24 # Set to the right version
+```
+
+That should be it. You will get an updated zip package. The name should reflect the date it was built and the right version.
 
 # Known Issues
 ### Current limit reached with speaker
