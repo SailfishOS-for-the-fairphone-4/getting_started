@@ -361,6 +361,9 @@ We can continue building the relevant bits of the Android base.
 
 First we change directory to the $ANDROID_ROOT.
 
+sudo apt install -y cpio ccache:
+Install dependencies needed to build the kernel.
+
 source build/envsetup.sh:
 source: This command is used to execute the commands in the specified script in the current shell session.
 build/envsetup.sh: This script is used to set up environment variables and functions needed for building Android.
@@ -384,6 +387,7 @@ Now we are ready to start building everything we sourced and synced so far:
 HABUILD_SDK $
 
 cd $ANDROID_ROOT
+sudo apt install -y cpio ccache # Make sure the dependencies are installed
 source build/envsetup.sh
 breakfast $DEVICE
 make -j$(nproc --all) hybris-hal droidmedia
