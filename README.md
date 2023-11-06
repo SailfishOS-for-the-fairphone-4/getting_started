@@ -469,6 +469,13 @@ git clone --recurse-submodules git@github.com:SailfishOS-for-the-fairphone-4/hid
 rpm/dhd/helpers/build_packages.sh --build=hybris/mw/hidl_audio -s rpm/hidl-audio.spec
 ```
 
+#### Mobile Data Fix
+
+```
+git clone --recurse-submodules git@github.com:mer-hybris/dummy_netd.git hybris/mw/dummy_netd
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/dummy_netd -s rpm/dummy_netd.spec
+```
+
 #### Fingerprint deamon
 
 implements the DBUS API of the Jolla sailfish-fpd packge to add fingerprint support to this port. first the build enviroment is configured using envsetup.sh. Then breakfast (commonly used for Android custom ROM development) is used to prepare the build for the specific device. After the preparation, make is used to compile the software after which it will use build_package.sh to build the package.
@@ -496,12 +503,12 @@ rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
 We use the `build_packages.sh` script in the `$ANDROID_ROOT/rpm/dhd/helpers/` to package SailfishOS. The packages are built by using the diffrent flags after which it will be build into an image using the --mic flag. We could do this either by:
 
 Building everything at once:
-
+*You can tag builds by adding an environment variable: `export EXTRA_NAME=-tagname`.*
 ```
 PLATFORM_SDK $
 
 cd $ANDROID_ROOT
-export RELEASE=4.5.0.18
+export RELEASE=4.5.0.24
 rpm/dhd/helpers/build_packages.sh
 ```
 
@@ -514,7 +521,7 @@ rpm/dhd/helpers/build_packages.sh --configs
 rpm/dhd/helpers/build_packages.sh --mw
 rpm/dhd/helpers/build_packages.sh --gg
 rpm/dhd/helpers/build_packages.sh --version
-export RELEASE=4.5.0.18
+export RELEASE=4.5.0.24
 rpm/dhd/helpers/build_packages.sh --mic
 ```
 
