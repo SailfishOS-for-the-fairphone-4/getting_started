@@ -432,8 +432,8 @@ First the SDK tool for the Sailfish_OS-4.5.8.18 will be installed, You will alwa
 ```
 PLATFORM_SDK $
 
-sdk-assistant create SailfishOS-4.5.0.18 https://releases.sailfishos.org/sdk/targets/Sailfish_OS-4.5.0.18-Sailfish_SDK_Tooling-i486.tar.7z
-sdk-assistant create $VENDOR-$DEVICE-$PORT_ARCH https://releases.sailfishos.org/sdk/targets/Sailfish_OS-4.5.0.18-Sailfish_SDK_Target-aarch64.tar.7z
+sdk-assistant create SailfishOS-4.5.0.24 https://releases.sailfishos.org/sdk/targets/Sailfish_OS-latest-Sailfish_SDK_Tooling-i486.tar.7z
+sdk-assistant create $VENDOR-$DEVICE-$PORT_ARCH https://releases.sailfishos.org/sdk/targets/Sailfish_OS-latest-Sailfish_SDK_Target-aarch64.tar.7z
 ```
 
 ## Cloning the "standard" configurations
@@ -595,6 +595,7 @@ Next, make sure to download the right tooling and target versions in the 'Packag
 A new target and tooling version only gets released when changes are made to the sdk(which will be mentioned in the release notes for sailfishOS).
 If you are building the newest version, you can just use the latest version as mentioned below.
 
+**Note: ** make sure to remove the old targets before adding new ones.
 ```
 PLATFORM_SDK $
 
